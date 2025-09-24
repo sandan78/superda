@@ -198,6 +198,15 @@ const Dashboard = () => {
                 { state: { destination: plan } }
               )
             }
+            onClick={() => {
+              navigate(`/destination/${encodeURIComponent(plan.region)}/${encodeURIComponent(plan.name)}`,
+                { state: { destination: plan } }
+              );
+              // Scroll to top after navigation
+              setTimeout(() => {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }, 100);
+            }}
           >
             View Details
           </Button>

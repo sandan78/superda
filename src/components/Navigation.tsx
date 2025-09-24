@@ -243,6 +243,12 @@ export const Navigation = () => {
                     if (el) itemRefs.current[index] = el;
                   }}
                   className={`nav-item-link nav-item ${active ? 'active' : ''}`}
+                  onClick={() => {
+                    // Ensure scroll to top on navigation
+                    setTimeout(() => {
+                      window.scrollTo({ top: 0, behavior: 'smooth' });
+                    }, 100);
+                  }}
                 >
                   <Icon className="nav-icon" />
                   <span>{item.label}</span>
@@ -277,6 +283,13 @@ export const Navigation = () => {
                     className={`mobile-nav-item flex items-center space-x-3 px-4 py-3 rounded-lg ${
                       active ? "active" : ""
                     }`}
+                    onClick={() => {
+                      setIsMobileMenuOpen(false);
+                      // Ensure scroll to top on mobile navigation
+                      setTimeout(() => {
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                      }, 100);
+                    }}
                   >
                     <Icon className="w-5 h-5" />
                     <span className="font-medium">{item.label}</span>

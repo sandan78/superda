@@ -367,6 +367,17 @@ export const DestinationCard = ({
                   )}/${encodeURIComponent(name)}`
                 )
               }
+              onClick={() => {
+                navigate(
+                  `/destination/${encodeURIComponent(
+                    country
+                  )}/${encodeURIComponent(name)}`
+                );
+                // Scroll to top after navigation
+                setTimeout(() => {
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }, 100);
+              }}
             >
               View Details
             </Button>

@@ -41,7 +41,14 @@ const DestinationDetail = () => {
 
   // Scroll to top when component mounts or destination changes
   useEffect(() => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0, behavior: 'instant' });
+    
+    // Also scroll to top after a short delay to ensure DOM is ready
+    const timer = setTimeout(() => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }, 50);
+    
+    return () => clearTimeout(timer);
   }, [destination]);
 
   useEffect(() => {
