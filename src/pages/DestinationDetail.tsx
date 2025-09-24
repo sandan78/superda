@@ -4,7 +4,7 @@ import { ParticleBackground } from "@/components/ParticleBackground";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { MapPin, Clock, Heart, Users, Shield, BedDouble, Camera, Utensils, Activity, Navigation, Lightbulb, CheckCircle, Circle, ArrowRight, Star, Calendar, DollarSign, Info, Sparkles, TrendingUp, Map } from "lucide-react";
+import { MapPin, Clock, Heart, Users, Shield, BedDouble, Camera, Utensils, Activity, Navigation, Lightbulb, CheckCircle, Circle, ArrowRight, Star, Calendar, DollarSign, Info, Sparkles, TrendingUp, Map, Thermometer, MessageCircle, CreditCard, Timer } from "lucide-react";
 import { usePlans } from "@/contexts/PlanContext";
 import { useToast } from "@/hooks/use-toast";
 import { bangaloreDestinations, keralaDestinations, tamilNaduDestinations, type Destination } from "@/data/destinations";
@@ -190,6 +190,13 @@ const DestinationDetail = () => {
 
   const getCategoryIcon = (category: string) => {
     switch (category) {
+      case 'people': return '👥';
+      case 'livelihood': return '🏭';
+      case 'culture': return '🎭';
+      case 'tradition': return '🎪';
+      case 'lifestyle': return '🏠';
+      case 'art': return '🎨';
+      case 'festival': return '🎊';
       case 'temple': return '🏛️';
       case 'nature': return '🌿';
       case 'adventure': return '🏔️';
@@ -200,6 +207,17 @@ const DestinationDetail = () => {
       case 'food': return '🍽️';
       default: return '📍';
     }
+  };
+
+  const normalizeHighlight = (highlight: string | { name: string; description: string; category: string }) => {
+    if (typeof highlight === 'string') {
+      return {
+        name: highlight,
+        description: highlight,
+        category: 'culture'
+      };
+    }
+    return highlight;
   };
 
   return (
@@ -415,27 +433,49 @@ const DestinationDetail = () => {
               </Card>
 
               {/* Cultural Highlights */}
-              <Card>
-                <CardContent className="p-8">
-                  <h2 className="text-3xl font-bold mb-6 flex items-center gap-3">
-                    <div className="p-2 bg-primary/10 rounded-lg">
-                      <Sparkles className="w-6 h-6 text-primary" />
-                    </div>
-                    Cultural Highlights
-                  </h2>
-                  <div className="grid gap-4">
-                    {destination.culturalHighlights.map((highlight, index) => (
-                      <div key={index} className="flex items-start gap-4 p-4 bg-muted/50 rounded-lg border">
-                        <div className="text-2xl">{getCategoryIcon(highlight.category)}</div>
-                        <div className="flex-1">
-                          <h3 className="font-semibold text-lg mb-2">{highlight.name}</h3>
-                          <p className="text-muted-foreground leading-relaxed">{highlight.description}</p>
-                          <Badge className="mt-3 capitalize bg-primary/10 text-primary border-primary/30">
-                            {highlight.category}
-                          </Badge>
-                        </div>
+              <Card className="overflow-hidden">
+                <CardContent className="p-0">
+                  <div className="bg-gradient-to-br from-indigo-50 to-purple-50 dark:from-indigo-950/30 dark:to-purple-950/30 p-8">
+                    <h2 className="text-3xl font-bold mb-3 flex items-center gap-3">
+                      <div className="p-2 bg-indigo-100 dark:bg-indigo-900 rounded-xl">
+                        <Sparkles className="w-6 h-6 text-indigo-600 dark:text-indigo-400" />
                       </div>
-                    ))}
+                      Cultural Highlights
+                    </h2>
+                    <p className="text-muted-foreground mb-6">Discover the people, traditions, and way of life that make this destination unique</p>
+                  </div>
+                  
+                  <div className="p-8 pt-4">
+                    <div className="grid gap-6">
+                      {destination.culturalHighlights.map((highlight, index) => {
+                        const normalized = normalizeHighlight(highlight);
+                        const categoryColors = {
+                          people: 'bg-blue-50 dark:bg-blue-950/30 border-blue-200 dark:border-blue-800',
+                          livelihood: 'bg-green-50 dark:bg-green-950/30 border-green-200 dark:border-green-800',
+                          culture: 'bg-purple-50 dark:bg-purple-950/30 border-purple-200 dark:border-purple-800',
+                          tradition: 'bg-orange-50 dark:bg-orange-950/30 border-orange-200 dark:border-orange-800',
+                          lifestyle: 'bg-pink-50 dark:bg-pink-950/30 border-pink-200 dark:border-pink-800',
+                          art: 'bg-indigo-50 dark:bg-indigo-950/30 border-indigo-200 dark:border-indigo-800',
+                          festival: 'bg-yellow-50 dark:bg-yellow-950/30 border-yellow-200 dark:border-yellow-800'
+                        };
+                        return (
+                          <div key={index} className={`flex items-start gap-5 p-6 rounded-xl border-2 transition-all duration-300 hover:shadow-lg hover:scale-[1.02] ${categoryColors[normalized.category as keyof typeof categoryColors] || 'bg-gray-50 dark:bg-gray-950/30 border-gray-200 dark:border-gray-800'}`}>
+                            <div className="text-3xl bg-white dark:bg-gray-900 p-3 rounded-full shadow-sm">
+                              {getCategoryIcon(normalized.category)}
+                            </div>
+                            <div className="flex-1">
+                              <div className="flex items-center gap-3 mb-3">
+                                <h3 className="font-bold text-xl text-foreground">{normalized.name}</h3>
+                                <Badge className="capitalize px-3 py-1 text-xs font-semibold bg-white/70 dark:bg-gray-900/70 text-foreground border-current">
+                                  {normalized.category}
+                                </Badge>
+                              </div>
+                              <p className="text-muted-foreground leading-relaxed text-base">{normalized.description}</p>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
                   </div>
                 </CardContent>
               </Card>
@@ -446,33 +486,91 @@ const DestinationDetail = () => {
               {/* Quick Info */}
               <Card>
                 <CardContent className="p-6">
-                  <h3 className="text-xl font-bold mb-6">Quick Info</h3>
+                  <h3 className="text-xl font-bold mb-6 flex items-center gap-2">
+                    <Info className="w-5 h-5 text-primary" />
+                    Essential Travel Info
+                  </h3>
                   <div className="space-y-4">
                     <div className="flex items-center gap-3">
-                      <div className="p-2 bg-primary/10 rounded-lg">
-                        <Clock className="w-4 h-4 text-primary" />
+                      <div className="p-2 bg-blue-50 dark:bg-blue-950 rounded-lg">
+                        <Clock className="w-4 h-4 text-blue-600 dark:text-blue-400" />
                       </div>
-                      <div>
-                        <p className="text-sm text-muted-foreground">Best Time</p>
+                      <div className="flex-1">
+                        <p className="text-sm text-muted-foreground">Best Time to Visit</p>
                         <p className="font-semibold">{destination.bestTime}</p>
                       </div>
                     </div>
+
+                    {destination.duration && (
+                      <div className="flex items-center gap-3">
+                        <div className="p-2 bg-green-50 dark:bg-green-950 rounded-lg">
+                          <Timer className="w-4 h-4 text-green-600 dark:text-green-400" />
+                        </div>
+                        <div className="flex-1">
+                          <p className="text-sm text-muted-foreground">Ideal Duration</p>
+                          <p className="font-semibold">{destination.duration}</p>
+                        </div>
+                      </div>
+                    )}
+
+                    {destination.climate && (
+                      <div className="flex items-center gap-3">
+                        <div className="p-2 bg-orange-50 dark:bg-orange-950 rounded-lg">
+                          <Thermometer className="w-4 h-4 text-orange-600 dark:text-orange-400" />
+                        </div>
+                        <div className="flex-1">
+                          <p className="text-sm text-muted-foreground">Climate</p>
+                          <p className="font-semibold text-sm">{destination.climate}</p>
+                        </div>
+                      </div>
+                    )}
+
+                    {destination.language && (
+                      <div className="flex items-center gap-3">
+                        <div className="p-2 bg-purple-50 dark:bg-purple-950 rounded-lg">
+                          <MessageCircle className="w-4 h-4 text-purple-600 dark:text-purple-400" />
+                        </div>
+                        <div className="flex-1">
+                          <p className="text-sm text-muted-foreground">Languages</p>
+                          <p className="font-semibold">{destination.language}</p>
+                        </div>
+                      </div>
+                    )}
+
+                    {destination.currency && (
+                      <div className="flex items-center gap-3">
+                        <div className="p-2 bg-emerald-50 dark:bg-emerald-950 rounded-lg">
+                          <CreditCard className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+                        </div>
+                        <div className="flex-1">
+                          <p className="text-sm text-muted-foreground">Currency</p>
+                          <p className="font-semibold">{destination.currency}</p>
+                        </div>
+                      </div>
+                    )}
                     
                     <div className="flex items-center gap-3">
-                      <div className="p-2 bg-primary/10 rounded-lg">
-                        <Shield className="w-4 h-4 text-primary" />
+                      <div className="p-2 bg-red-50 dark:bg-red-950 rounded-lg">
+                        <Shield className="w-4 h-4 text-red-600 dark:text-red-400" />
                       </div>
-                      <div>
+                      <div className="flex-1">
                         <p className="text-sm text-muted-foreground">Safety Level</p>
-                        <p className="font-semibold capitalize">{destination.safetyLevel}</p>
+                        <div className="flex items-center gap-2">
+                          <p className="font-semibold capitalize">{destination.safetyLevel}</p>
+                          <div className="text-sm">
+                            {destination.safetyLevel === 'high' && '🟢'}
+                            {destination.safetyLevel === 'medium' && '🟡'}
+                            {destination.safetyLevel === 'low' && '🔴'}
+                          </div>
+                        </div>
                       </div>
                     </div>
                     
                     <div className="flex items-center gap-3">
-                      <div className="p-2 bg-primary/10 rounded-lg">
-                        <DollarSign className="w-4 h-4 text-primary" />
+                      <div className="p-2 bg-yellow-50 dark:bg-yellow-950 rounded-lg">
+                        <DollarSign className="w-4 h-4 text-yellow-600 dark:text-yellow-400" />
                       </div>
-                      <div>
+                      <div className="flex-1">
                         <p className="text-sm text-muted-foreground">Budget Range</p>
                         <p className="font-semibold">{destination.priceRange}</p>
                         <p className="text-xs text-muted-foreground">{rentText}</p>
@@ -516,23 +614,25 @@ const DestinationDetail = () => {
               {/* Travel Tips */}
               <Card>
                 <CardContent className="p-6">
-                  <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
-                    <Lightbulb className="w-5 h-5 text-primary" />
-                    Travel Tips
+                  <h3 className="text-xl font-bold mb-6 flex items-center gap-2">
+                    <Lightbulb className="w-5 h-5 text-amber-600" />
+                    Expert Travel Tips
                   </h3>
                   <div className="space-y-3">
-                    <div className="p-3 bg-muted/50 rounded-lg">
-                      <p className="text-sm font-medium mb-1">Local Currency</p>
-                      <p className="text-xs text-muted-foreground">Indian Rupee (₹)</p>
-                    </div>
-                    <div className="p-3 bg-muted/50 rounded-lg">
-                      <p className="text-sm font-medium mb-1">Language</p>
-                      <p className="text-xs text-muted-foreground">Hindi, English, Local dialects</p>
-                    </div>
-                    <div className="p-3 bg-muted/50 rounded-lg">
-                      <p className="text-sm font-medium mb-1">Transportation</p>
-                      <p className="text-xs text-muted-foreground">Trains, buses, taxis available</p>
-                    </div>
+                    {destination.travelTips && destination.travelTips.map((tip, index) => (
+                      <div key={index} className="flex items-start gap-3 p-3 bg-amber-50/50 dark:bg-amber-950/20 rounded-lg border border-amber-200/30 dark:border-amber-800/30">
+                        <div className="p-1 bg-amber-100 dark:bg-amber-900 rounded-full mt-0.5 flex-shrink-0">
+                          <div className="w-2 h-2 bg-amber-600 rounded-full"></div>
+                        </div>
+                        <p className="text-sm leading-relaxed text-muted-foreground font-medium">{tip}</p>
+                      </div>
+                    ))}
+                    {(!destination.travelTips || destination.travelTips.length === 0) && (
+                      <div className="text-center py-4 text-muted-foreground">
+                        <Lightbulb className="w-8 h-8 mx-auto mb-2 opacity-50" />
+                        <p className="text-sm">Travel tips coming soon...</p>
+                      </div>
+                    )}
                   </div>
                 </CardContent>
               </Card>
