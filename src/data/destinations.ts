@@ -8,10 +8,18 @@ export type Destination = {
   emotionalMatch: string;
   matchPercentage: number;
   description: string;
-  culturalHighlights: string[];
+  culturalHighlights: (string | {
+    name: string;
+    description: string;
+    category: "people" | "livelihood" | "culture" | "tradition" | "lifestyle" | "art" | "festival";
+  })[];
   safetyLevel: "high" | "medium" | "low";
   bestTime: string;
   priceRange: "$" | "$$" | "$$$";
+  duration: string;
+  climate: string;
+  language: string;
+  currency: string;
   idealGroupSize?: string;
   groupDescription?: string;
   topSpots?: string[];
@@ -34,10 +42,35 @@ export const tamilNaduDestinations: Destination[] = [
     emotionalMatch: "Peaceful & Rejuvenating",
     matchPercentage: 94,
     description: "Escape to the serene hill station of Ooty with its tea gardens, misty mountains, and colonial charm perfect for mental peace.",
-    culturalHighlights: ["Tea Garden Tours", "Toy Train Ride", "Rose Garden"],
+    culturalHighlights: [
+      { 
+        name: "Tamil Hill Tribe Communities", 
+        description: "Meet the indigenous Toda people who have lived in these hills for over 1,000 years, known for their distinctive huts and buffalo herding traditions.", 
+        category: "people" 
+      },
+      { 
+        name: "Tea Estate Workers", 
+        description: "Generations of Tamil families have worked in tea plantations, mastering the art of hand-picking tea leaves and traditional processing methods.", 
+        category: "livelihood" 
+      },
+      { 
+        name: "Colonial Heritage Culture", 
+        description: "British colonial influence blends with Tamil traditions, creating unique architecture, gardens, and lifestyle patterns still visible today.", 
+        category: "culture" 
+      },
+      { 
+        name: "Nilgiri Traditional Crafts", 
+        description: "Local artisans create beautiful handwoven shawls, eucalyptus oil products, and traditional needlework reflecting hill station heritage.", 
+        category: "art" 
+      }
+    ],
     safetyLevel: "high" as const,
     bestTime: "Apr-Jun",
     priceRange: "$$" as const,
+    duration: "2-3 days",
+    climate: "Cool temperate (10-25°C)",
+    language: "Tamil, English",
+    currency: "Indian Rupee (INR)",
     touristPlaces: [
       { name: "Botanical Garden", description: "240-acre garden with over 1,000 species of plants and trees", category: "nature" },
       { name: "Ooty Lake", description: "Artificial lake perfect for boating and peaceful walks", category: "nature" },
@@ -48,7 +81,15 @@ export const tamilNaduDestinations: Destination[] = [
     localCuisine: ["Nilgiri Tea", "Homemade Chocolates", "Varkey (local biscuit)", "Eucalyptus Honey"],
     activities: ["Toy Train Ride", "Trekking", "Boating", "Photography", "Tea Garden Tours"],
     nearbyAttractions: ["Coonoor", "Kotagiri", "Pykara Falls", "Emerald Lake"],
-    travelTips: ["Carry warm clothes even in summer", "Book toy train tickets in advance", "Best photography during early morning"]
+    travelTips: [
+      "Book Nilgiri Mountain Railway tickets 120 days in advance online to avoid disappointment",
+      "Pack layered clothing - mornings are cold (10°C), afternoons warm (20°C)",
+      "Stay near Charring Cross for easy access to attractions and restaurants",
+      "Visit tea factories early morning (8-10 AM) for fresh processing demonstrations",
+      "Carry cash - many local vendors don't accept cards",
+      "Download offline maps - network coverage is spotty in remote areas",
+      "Book accommodations with heaters during peak season (April-June)"
+    ]
   },
   {
     name: "Mahabalipuram",
@@ -57,10 +98,35 @@ export const tamilNaduDestinations: Destination[] = [
     emotionalMatch: "Cultural & Reflective",
     matchPercentage: 89,
     description: "Discover ancient rock-cut temples and sculptures while enjoying peaceful beach vibes at this UNESCO World Heritage site.",
-    culturalHighlights: ["Shore Temple", "Rock Sculptures", "Beach Meditation"],
+    culturalHighlights: [
+      {
+        name: "Ancient Stone Carvers",
+        description: "Meet artisan families who have been practicing stone carving for 15 generations, continuing the Pallava dynasty traditions with incredible skill.",
+        category: "people"
+      },
+      {
+        name: "Fishing Community Heritage",
+        description: "Local fishermen maintain age-old techniques, using catamarans and traditional nets while living in harmony with the ancient monuments.",
+        category: "livelihood"
+      },
+      {
+        name: "UNESCO World Heritage Culture",
+        description: "Living museum where 7th-century Pallava architecture blends with daily Tamil life, creating a unique cultural preservation model.",
+        category: "culture"
+      },
+      {
+        name: "Classical Dance Traditions",
+        description: "Local Bharatanatyam and folk dance performances narrate the stories carved in stone, keeping ancient narratives alive through movement.",
+        category: "art"
+      }
+    ],
     safetyLevel: "high" as const,
     bestTime: "Nov-Mar",
     priceRange: "$" as const,
+    duration: "1-2 days",
+    climate: "Tropical coastal (24-32°C)",
+    language: "Tamil, English",
+    currency: "Indian Rupee (INR)",
     touristPlaces: [
       { name: "Shore Temple", description: "7th-century structural temple facing the Bay of Bengal", category: "temple" },
       { name: "Pancha Rathas", description: "Five monolithic rock-cut temples shaped like chariots", category: "historical" },
@@ -71,7 +137,15 @@ export const tamilNaduDestinations: Destination[] = [
     localCuisine: ["Fresh Seafood", "Filter Coffee", "Masala Dosa", "Coconut Rice"],
     activities: ["Rock Climbing", "Beach Volleyball", "Sculpture Workshops", "Sunrise Meditation"],
     nearbyAttractions: ["Covelong Beach", "Dakshinachitra", "Crocodile Bank", "Vedanthangal Bird Sanctuary"],
-    travelTips: ["Visit early morning to avoid crowds", "Hire local guides for historical insights", "Carry sun protection"]
+    travelTips: [
+      "Arrive at Shore Temple by 6 AM for magical sunrise photos without crowds",
+      "Hire certified ASI guide (₹300) at entrance for authentic historical insights",
+      "Wear comfortable walking shoes - you'll walk on uneven stone surfaces",
+      "Visit stone carving workshops near Five Rathas - watch artisans at work",
+      "Carry water bottle and hat - limited shade between monuments",
+      "Best photography time: Golden hour (6-7 AM, 5:30-6:30 PM)",
+      "Respect monument rules - no climbing on sculptures for photos"
+    ]
   },
   {
     name: "Kodaikanal",
