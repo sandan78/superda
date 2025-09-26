@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Menu, X, Home, MapPin, Mountain, Waves, Building, LayoutDashboard, Compass } from "lucide-react";
+import { Menu, X, Chrome as Home, MapPin, Mountain, Waves, Building, LayoutDashboard, Compass } from "lucide-react";
 
 const navItems = [
   { path: "/", label: "Home", icon: Home },
