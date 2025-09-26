@@ -11,30 +11,43 @@ export const ParticleBackground = ({ theme = "minimal" }: ParticleBackgroundProp
   const getThemeColor = () => {
     switch (theme) {
       case "ocean":
-        return "#3BAFDA"; // ocean blue
+        return "#06b6d4"; // enhanced cyan
       case "forest":
-        return "#4CAF50"; // forest green
+        return "#10b981"; // enhanced emerald
       case "sunset":
-        return "#FF7043"; // sunset orange
+        return "#f97316"; // enhanced orange
       default:
-        return "#888"; // minimal gray
+        return "#8b5cf6"; // enhanced purple
     }
   };
 
+  const getThemeGradient = () => {
+    switch (theme) {
+      case "ocean":
+        return "radial-gradient(circle at center, #0f172a, #020617)";
+      case "forest":
+        return "radial-gradient(circle at center, #064e3b, #022c22)";
+      case "sunset":
+        return "radial-gradient(circle at center, #9a3412, #431407)";
+      default:
+        return "radial-gradient(circle at center, #1e1b4b, #0f0f23)";
+    }
+  };
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
 
-    const particles = container.querySelectorAll<HTMLDivElement>(".earth-particle");
+    const particles = container.querySelectorAll<HTMLDivElement>(".premium-particle");
 
     const handleMouseMove = (e: MouseEvent) => {
       const { innerWidth, innerHeight } = window;
-      const x = (e.clientX / innerWidth - 0.5) * 30;
-      const y = (e.clientY / innerHeight - 0.5) * 30;
+      const x = (e.clientX / innerWidth - 0.5) * 50;
+      const y = (e.clientY / innerHeight - 0.5) * 50;
 
       particles.forEach((p, i) => {
-        const speed = 2 + (i % 5);
-        p.style.transform = `translate(${x / speed}px, ${y / speed}px) scale(${p.dataset.scale})`;
+        const speed = 3 + (i % 7);
+        const rotation = (i % 360);
+        p.style.transform = `translate(${x / speed}px, ${y / speed}px) scale(${p.dataset.scale}) rotate(${rotation + (x + y) / 10}deg)`;
       });
     };
 
@@ -47,34 +60,41 @@ export const ParticleBackground = ({ theme = "minimal" }: ParticleBackgroundProp
       ref={containerRef}
       className="absolute inset-0 -z-10 overflow-hidden"
       style={{
-        background: "radial-gradient(circle at center, #0d0d0d, #000)", // space-like bg
+        background: getThemeGradient(),
       }}
     >
-      {/* Earth center glow */}
-      <div className="absolute left-1/2 top-1/2 w-64 h-64 -translate-x-1/2 -translate-y-1/2 rounded-full bg-gradient-to-br from-blue-500/60 to-green-400/40 blur-3xl opacity-50 animate-pulse" />
+      {/* Enhanced center glow */}
+      <div className="absolute left-1/2 top-1/2 w-96 h-96 -translate-x-1/2 -translate-y-1/2 rounded-full opacity-30 animate-pulse" 
+           style={{ 
+             background: `radial-gradient(circle, ${getThemeColor()}40, transparent)`,
+             filter: 'blur(60px)'
+           }} />
 
-      {/* Particles orbiting */}
-      {Array.from({ length: 40 }).map((_, i) => (
+      {/* Premium floating particles */}
+      {Array.from({ length: 60 }).map((_, i) => (
         <div
           key={i}
-          className="earth-particle absolute rounded-full"
-          data-scale={(0.3 + Math.random() * 1.2).toFixed(2)}
+          className="premium-particle absolute rounded-full animate-float"
+          data-scale={(0.2 + Math.random() * 1.5).toFixed(2)}
           style={{
-            width: `${2 + Math.random() * 4}px`,
-            height: `${2 + Math.random() * 4}px`,
+            width: `${1 + Math.random() * 6}px`,
+            height: `${1 + Math.random() * 6}px`,
             left: `${Math.random() * 100}%`,
             top: `${Math.random() * 100}%`,
             background: getThemeColor(),
-            opacity: 0.5 + Math.random() * 0.5,
-            boxShadow: `0 0 ${2 + Math.random() * 6}px ${getThemeColor()}`,
+            opacity: 0.3 + Math.random() * 0.7,
+            boxShadow: `0 0 ${4 + Math.random() * 12}px ${getThemeColor()}`,
             borderRadius: "50%",
-            transition: "transform 0.2s ease-out",
+            transition: "transform 0.3s ease-out",
+            animationDelay: `${Math.random() * 8}s`,
+            animationDuration: `${6 + Math.random() * 8}s`
           }}
         />
       ))}
 
-      {/* Subtle gradient overlay */}
-      <div className="absolute inset-0 bg-gradient-to-t from-background/30 via-transparent to-background/20 pointer-events-none" />
+      {/* Enhanced gradient overlay */}
+      <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-black/20 pointer-events-none" />
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/60 pointer-events-none" />
     </div>
   );
 };
