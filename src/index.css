@@ -357,6 +357,7 @@ All colors MUST be HSL.
   .parallax-element {
     will-change: transform;
   }
+}
 
 /* Premium Keyframes */
 @keyframes fadeInUp {
@@ -604,5 +605,4 @@ html {
 .destination-btn:disabled {
   opacity: 0.6;
   cursor: not-allowed;
-}  
-
+}
