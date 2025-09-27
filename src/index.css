@@ -436,7 +436,19 @@ html {
   background: linear-gradient(135deg, #5a6fd8, #6a4190);
 }
 
-/* Minimal fix for navigation visibility on white backgrounds */
-nav, .navigation, [role="navigation"] {
-  text-shadow: 0 0 1px rgba(0, 0, 0, 0.1);
+/* Fix navigation text visibility on white backgrounds */
+nav *:not(.active):not([aria-current="page"]), 
+.navigation *:not(.active):not([aria-current="page"]), 
+[role="navigation"] *:not(.active):not([aria-current="page"]) {
+  color: #374151 !important;
+}
+
+/* Keep active/selected items as they are */
+nav .active,
+nav [aria-current="page"],
+.navigation .active, 
+.navigation [aria-current="page"],
+[role="navigation"] .active,
+[role="navigation"] [aria-current="page"] {
+  /* Keep original styling */
 }
