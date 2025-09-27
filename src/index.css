@@ -357,7 +357,6 @@ All colors MUST be HSL.
   .parallax-element {
     will-change: transform;
   }
-}
 
 /* Premium Keyframes */
 @keyframes fadeInUp {
