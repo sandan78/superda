@@ -16,12 +16,40 @@ const navItems = [
 export const Navigation = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [selectorStyle, setSelectorStyle] = useState({ width: 0, left: 0 });
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [isDarkBackground, setIsDarkBackground] = useState(true);
   const location = useLocation();
   const navRef = useRef<HTMLDivElement>(null);
   const itemRefs = useRef<{ [key: number]: HTMLElement }>({});
 
   const isActive = (path: string) => location.pathname === path;
 
+  // Detect scroll position and background color
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollPosition = window.scrollY;
+      const newIsScrolled = scrollPosition > 50;
+      setIsScrolled(newIsScrolled);
+      
+      // Detect background color by checking the page content
+      const body = document.body;
+      const computedStyle = window.getComputedStyle(body);
+      const backgroundColor = computedStyle.backgroundColor;
+      
+      // Check if we're on a page with dark background
+      const isDark = location.pathname === '/' || 
+                    location.pathname === '/tamil-nadu' || 
+                    location.pathname === '/kerala' || 
+                    location.pathname === '/bangalore' || 
+                    location.pathname === '/discover';
+      
+      setIsDarkBackground(isDark && !newIsScrolled);
+    };
+
+    handleScroll(); // Initial check
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [location.pathname]);
   // Update selector position when route changes
   useEffect(() => {
     const activeIndex = navItems.findIndex(item => isActive(item.path));
@@ -38,8 +66,22 @@ export const Navigation = () => {
     }
   }, [location.pathname]);
 
+  // Dynamic text color classes
+  const getTextColorClass = () => {
+    if (isDarkBackground && !isScrolled) {
+      return 'text-white';
+    }
+    return 'text-gray-900';
+  };
+
+  const getNavbarClass = () => {
+    if (isScrolled) {
+      return 'glass-premium border-b border-white/20 bg-white/95 backdrop-blur-xl';
+    }
+    return 'glass-premium border-b border-white/20';
+  };
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 glass-premium border-b border-white/20">
+    <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${getNavbarClass()}`}>
       <style jsx>{`
         .animated-nav {
           position: relative;
@@ -57,13 +99,17 @@ export const Navigation = () => {
           top: 50%;
           transform: translateY(-50%);
           height: 40px;
-          background: linear-gradient(135deg, rgba(59, 130, 246, 0.8), rgba(29, 78, 216, 0.9), rgba(124, 58, 237, 0.8));
+          background: ${isDarkBackground && !isScrolled 
+            ? 'linear-gradient(135deg, rgba(59, 130, 246, 0.8), rgba(29, 78, 216, 0.9), rgba(124, 58, 237, 0.8))'
+            : 'linear-gradient(135deg, rgba(59, 130, 246, 0.9), rgba(29, 78, 216, 1), rgba(124, 58, 237, 0.9))'};
           backdrop-filter: blur(20px);
           -webkit-backdrop-filter: blur(20px);
           border-radius: 20px;
           transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
           z-index: 1;
-          box-shadow: 0 8px 32px rgba(59, 130, 246, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+          box-shadow: ${isDarkBackground && !isScrolled 
+            ? '0 8px 32px rgba(59, 130, 246, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.2)'
+            : '0 8px 32px rgba(59, 130, 246, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.3)'};
           animation: selectorPulse 0.6s ease-out;
         }
 
@@ -90,7 +136,7 @@ export const Navigation = () => {
           padding: 10px 16px;
           border-radius: 20px;
           transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
-          color: rgba(255, 255, 255, 0.8);
+          color: ${isDarkBackground && !isScrolled ? 'rgba(255, 255, 255, 0.8)' : 'rgba(17, 24, 39, 0.8)'};
           text-decoration: none;
           font-weight: 500;
           z-index: 2;
@@ -98,31 +144,39 @@ export const Navigation = () => {
         }
         
         .nav-item-link.active {
-          color: white;
-          text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+          color: ${isDarkBackground && !isScrolled ? 'white' : 'rgb(17, 24, 39)'};
+          text-shadow: ${isDarkBackground && !isScrolled 
+            ? '0 2px 8px rgba(0, 0, 0, 0.5)' 
+            : '0 2px 8px rgba(255, 255, 255, 0.8)'};
           animation: textGlow 0.6s ease-out;
         }
 
         @keyframes textGlow {
           0% {
-            color: rgba(255, 255, 255, 0.8);
+            color: ${isDarkBackground && !isScrolled ? 'rgba(255, 255, 255, 0.8)' : 'rgba(17, 24, 39, 0.8)'};
             text-shadow: none;
           }
           50% {
-            color: #e0e7ff;
-            text-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
+            color: ${isDarkBackground && !isScrolled ? '#e0e7ff' : '#1f2937'};
+            text-shadow: ${isDarkBackground && !isScrolled 
+              ? '0 0 8px rgba(255, 255, 255, 0.5)' 
+              : '0 0 8px rgba(59, 130, 246, 0.5)'};
           }
           100% {
-            color: white;
-            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+            color: ${isDarkBackground && !isScrolled ? 'white' : 'rgb(17, 24, 39)'};
+            text-shadow: ${isDarkBackground && !isScrolled 
+              ? '0 2px 8px rgba(0, 0, 0, 0.5)' 
+              : '0 2px 8px rgba(255, 255, 255, 0.8)'};
           }
         }
         
         .nav-item-link:not(.active):hover {
-          color: white;
-          background: rgba(255, 255, 255, 0.1);
+          color: ${isDarkBackground && !isScrolled ? 'white' : 'rgb(17, 24, 39)'};
+          background: ${isDarkBackground && !isScrolled ? 'rgba(255, 255, 255, 0.1)' : 'rgba(59, 130, 246, 0.1)'};
           transform: translateY(-1px);
-          text-shadow: 0 2px 8px rgba(255, 255, 255, 0.3);
+          text-shadow: ${isDarkBackground && !isScrolled 
+            ? '0 2px 8px rgba(255, 255, 255, 0.3)' 
+            : '0 2px 8px rgba(59, 130, 246, 0.3)'};
         }
 
         .nav-item-link:not(.active) {
@@ -136,33 +190,41 @@ export const Navigation = () => {
         }
         
         .nav-item-link.active .nav-icon {
-          color: white;
-          filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.5));
+          color: ${isDarkBackground && !isScrolled ? 'white' : 'rgb(17, 24, 39)'};
+          filter: ${isDarkBackground && !isScrolled 
+            ? 'drop-shadow(0 2px 8px rgba(0, 0, 0, 0.5))' 
+            : 'drop-shadow(0 2px 8px rgba(255, 255, 255, 0.8))'};
           animation: iconGlow 0.6s ease-out;
         }
 
         @keyframes iconGlow {
           0% {
-            color: rgba(255, 255, 255, 0.8);
+            color: ${isDarkBackground && !isScrolled ? 'rgba(255, 255, 255, 0.8)' : 'rgba(17, 24, 39, 0.8)'};
             filter: none;
             transform: scale(1);
           }
           50% {
-            color: #e0e7ff;
-            filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.8));
+            color: ${isDarkBackground && !isScrolled ? '#e0e7ff' : '#1f2937'};
+            filter: ${isDarkBackground && !isScrolled 
+              ? 'drop-shadow(0 0 8px rgba(255, 255, 255, 0.8))' 
+              : 'drop-shadow(0 0 8px rgba(59, 130, 246, 0.8))'};
             transform: scale(1.1);
           }
           100% {
-            color: white;
-            filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.5));
+            color: ${isDarkBackground && !isScrolled ? 'white' : 'rgb(17, 24, 39)'};
+            filter: ${isDarkBackground && !isScrolled 
+              ? 'drop-shadow(0 2px 8px rgba(0, 0, 0, 0.5))' 
+              : 'drop-shadow(0 2px 8px rgba(255, 255, 255, 0.8))'};
             transform: scale(1);
           }
         }
 
         .nav-item-link:not(.active):hover .nav-icon {
           transform: scale(1.1);
-          color: white;
-          filter: drop-shadow(0 2px 8px rgba(255, 255, 255, 0.3));
+          color: ${isDarkBackground && !isScrolled ? 'white' : 'rgb(17, 24, 39)'};
+          filter: ${isDarkBackground && !isScrolled 
+            ? 'drop-shadow(0 2px 8px rgba(255, 255, 255, 0.3))' 
+            : 'drop-shadow(0 2px 8px rgba(59, 130, 246, 0.3))'};
         }
 
         @keyframes fade-in {
@@ -185,9 +247,13 @@ export const Navigation = () => {
         }
 
         .mobile-nav-item.active {
-          background: linear-gradient(135deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.1));
-          color: white;
-          border-left: 3px solid rgba(255, 255, 255, 0.8);
+          background: ${isDarkBackground && !isScrolled 
+            ? 'linear-gradient(135deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.1))' 
+            : 'linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(59, 130, 246, 0.1))'};
+          color: ${isDarkBackground && !isScrolled ? 'white' : 'rgb(17, 24, 39)'};
+          border-left: ${isDarkBackground && !isScrolled 
+            ? '3px solid rgba(255, 255, 255, 0.8)' 
+            : '3px solid rgba(59, 130, 246, 0.8)'};
           transform: translateX(4px);
           animation: mobileActiveSlide 0.5s ease-out;
         }
@@ -195,21 +261,25 @@ export const Navigation = () => {
         @keyframes mobileActiveSlide {
           0% {
             background: transparent;
-            color: rgba(255, 255, 255, 0.7);
+            color: ${isDarkBackground && !isScrolled ? 'rgba(255, 255, 255, 0.7)' : 'rgba(17, 24, 39, 0.7)'};
             border-left: 3px solid transparent;
             transform: translateX(0);
           }
           100% {
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.1));
-            color: white;
-            border-left: 3px solid rgba(255, 255, 255, 0.8);
+            background: ${isDarkBackground && !isScrolled 
+              ? 'linear-gradient(135deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.1))' 
+              : 'linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(59, 130, 246, 0.1))'};
+            color: ${isDarkBackground && !isScrolled ? 'white' : 'rgb(17, 24, 39)'};
+            border-left: ${isDarkBackground && !isScrolled 
+              ? '3px solid rgba(255, 255, 255, 0.8)' 
+              : '3px solid rgba(59, 130, 246, 0.8)'};
             transform: translateX(4px);
           }
         }
 
         .mobile-nav-item:not(.active):hover {
-          background: rgba(255, 255, 255, 0.08);
-          color: white;
+          background: ${isDarkBackground && !isScrolled ? 'rgba(255, 255, 255, 0.08)' : 'rgba(59, 130, 246, 0.08)'};
+          color: ${isDarkBackground && !isScrolled ? 'white' : 'rgb(17, 24, 39)'};
           transform: translateX(2px);
         }
       `}</style>
@@ -219,9 +289,9 @@ export const Navigation = () => {
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-2">
             <div className="w-10 h-10 glass-premium rounded-xl flex items-center justify-center shadow-luxury">
-              <MapPin className="w-5 h-5 text-white" />
+              <MapPin className={`w-5 h-5 transition-colors duration-500 ${getTextColorClass()}`} />
             </div>
-            <span className="text-xl font-cinematic text-white">
+            <span className={`text-xl font-cinematic transition-colors duration-500 ${getTextColorClass()}`}>
               Emotion Escapes 
             </span> 
           </Link>
@@ -265,7 +335,7 @@ export const Navigation = () => {
           <Button
             variant="outline"
             size="sm"
-            className="md:hidden glass border-white/20 text-white hover:bg-white/10 transition-colors"
+            className={`md:hidden glass border-white/20 hover:bg-white/10 transition-all duration-500 ${getTextColorClass()}`}
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           >
             {isMobileMenuOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
@@ -296,7 +366,7 @@ export const Navigation = () => {
                     }}
                   >
                     <Icon className="w-5 h-5" />
-                    <span className="font-medium text-white">{item.label}</span>
+                    <span className={`font-medium transition-colors duration-500 ${getTextColorClass()}`}>{item.label}</span>
                   </Link>
                 );
               })}
