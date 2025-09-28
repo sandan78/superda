@@ -480,4 +480,4 @@ export const DestinationCard = ({
       </div>
     </Card>
   );
-}; 
+};  
