@@ -72,7 +72,7 @@ export const DestinationCard = ({
   };
 
   const handleGetGoingPlans = () => {
-    const existing = selectedPlans.find(
+    const existing = selectedPlans.find( 
       (plan) => plan.name === name && plan.region === country
     );
     if (!existing) {
@@ -114,6 +114,19 @@ export const DestinationCard = ({
     low: "#e65151",
   };
 
+  const getSafetyIcon = () => {
+    switch (safetyLevel) {
+      case "high":
+        return "🟢";
+      case "medium":
+        return "🟡";
+      case "low":
+        return "🔴";
+      default:
+        return "";
+    }
+  };
+
   const handleImageError = (
     e: React.SyntheticEvent<HTMLImageElement, Event>
   ) => {
@@ -122,7 +135,7 @@ export const DestinationCard = ({
   };
 
   return (
-    <Card className="destination-card h-full">
+    <Card className="destination-card h-full group">
       <style>{`
         .destination-card {
           background: #fff;
@@ -136,15 +149,88 @@ export const DestinationCard = ({
           overflow: hidden;
           display: flex;
           flex-direction: column;
-          transition: transform 0.25s ease, box-shadow 0.25s ease, border 0.25s ease;
+          transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+          position: relative;
+          isolation: isolate;
         }
+        
+        /* World-class hover effects */
+        .destination-card::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: linear-gradient(135deg, 
+            rgba(255,255,255,0.1) 0%,
+            rgba(255,255,255,0.05) 50%,
+            rgba(255,255,255,0.02) 100%);
+          border-radius: 1rem;
+          opacity: 0;
+          transition: opacity 0.3s ease;
+          z-index: 1;
+          pointer-events: none;
+        }
+        
         .destination-card:hover {
           transform: translateY(-8px) scale(1.02);
-          box-shadow:
-            0 12px 28px rgba(0, 0, 0, 0.35),
-            0 6px 18px rgba(0, 0, 0, 0.20),
-            0 0 18px rgba(255, 255, 255, 0.25);
-          border: 1px solid rgba(255, 255, 255, 0.3);
+          box-shadow: 
+            0 25px 50px rgba(0, 0, 0, 0.15),
+            0 15px 35px rgba(0, 0, 0, 0.1),
+            0 0 0 1px rgba(255, 255, 255, 0.1),
+            inset 0 1px 0 rgba(255, 255, 255, 0.4);
+          border-color: rgba(255, 255, 255, 0.3);
+        }
+        
+        .destination-card:hover::before {
+          opacity: 1;
+        }
+        
+        /* Enhanced image hover effect */
+        .destination-card:hover .destination-img {
+          transform: scale(1.08);
+        }
+        
+        /* Badge hover enhancement */
+        .destination-card:hover .destination-badge {
+          transform: translateY(-2px) scale(1.05);
+          box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+        }
+        
+        /* Button container hover enhancement */
+        .destination-card:hover .destination-buttons {
+          transform: translateY(-2px);
+        }
+        
+        /* Individual button hover effects */
+        .destination-btn {
+          position: relative;
+          overflow: hidden;
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .destination-btn::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: -100%;
+          width: 100%;
+          height: 100%;
+          background: linear-gradient(90deg, 
+            transparent, 
+            rgba(255, 255, 255, 0.2), 
+            transparent);
+          transition: left 0.6s ease;
+        }
+        
+        .destination-btn:hover::before {
+          left: 100%;
+        }
+        
+        .destination-btn:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
         }
 
         /* Image */
@@ -161,6 +247,7 @@ export const DestinationCard = ({
           height: 100%;
           object-fit: cover;
           display: block;
+          transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
         /* Top-right match pill */
@@ -179,6 +266,8 @@ export const DestinationCard = ({
           align-items: center;
           gap: 6px;
           box-shadow: 0 6px 14px rgba(0,0,0,0.2);
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+          z-index: 2;
         }
 
         /* Body */
@@ -188,8 +277,11 @@ export const DestinationCard = ({
           flex-direction: column;
           flex-grow: 1;
           justify-content: space-between;
+          position: relative;
+          z-index: 2;
         }
 
+        /* Title + Location block */
         .destination-title {
           font-size: 1.35rem;
           font-weight: 1500;
@@ -197,7 +289,13 @@ export const DestinationCard = ({
           color: #101828;
           letter-spacing: -0.01em;
           line-height: 1.2;
+          transition: color 0.3s ease;
         }
+        
+        .destination-card:hover .destination-title {
+          color: #1a365d;
+        }
+        
         .destination-location {
           display: inline-flex;
           align-items: center;
@@ -207,12 +305,26 @@ export const DestinationCard = ({
           color: #6b7280;
           margin-top: 6px;
           margin-bottom: 10px;
+          transition: color 0.3s ease;
         }
+        
+        .destination-card:hover .destination-location {
+          color: #4b5563;
+        }
+        
         .destination-location svg {
           width: 16px;
           height: 16px;
+          flex: 0 0 16px;
+          vertical-align: middle;
+          transition: transform 0.3s ease;
+        }
+        
+        .destination-card:hover .destination-location svg {
+          transform: scale(1.1);
         }
 
+        /* Description */
         .destination-description {
           font-size: 0.96rem;
           line-height: 1.55;
@@ -223,19 +335,28 @@ export const DestinationCard = ({
           -webkit-line-clamp: 3;
           -webkit-box-orient: vertical;
           overflow: hidden;
+          transition: color 0.3s ease;
+        }
+        
+        .destination-card:hover .destination-description {
+          color: #404040;
         }
 
+        /* Content wrapper for consistent spacing */
         .destination-content {
           flex-grow: 1;
           display: flex;
           flex-direction: column;
         }
 
+        /* Bottom section */
         .destination-bottom {
           margin-top: auto;
           padding-top: 12px;
+          transition: transform 0.3s ease;
         }
 
+        /* Meta row (time, price, safety) */
         .destination-info-row {
           display: flex;
           align-items: center;
@@ -244,33 +365,59 @@ export const DestinationCard = ({
           color: #475d69;
           gap: 10px;
           margin-bottom: 16px;
+          transition: transform 0.3s ease;
         }
+        
+        .destination-card:hover .destination-info-row {
+          transform: translateY(-1px);
+        }
+        
         .meta-left {
           display: inline-flex;
           align-items: center;
           gap: 16px;
+          white-space: nowrap;
         }
         .meta-item {
           display: inline-flex;
           align-items: center;
           gap: 6px;
+          transition: transform 0.3s ease;
         }
+        
+        .destination-card:hover .meta-item {
+          transform: translateX(2px);
+        }
+        
         .safety {
           display: inline-flex;
           align-items: center;
           gap: 6px;
           font-weight: 700;
+          transition: transform 0.3s ease;
         }
+        
+        .destination-card:hover .safety {
+          transform: scale(1.05);
+        }
+        
         .safety-dot {
           width: 10px;
           height: 10px;
           border-radius: 999px;
           display: inline-block;
+          transition: transform 0.3s ease;
+        }
+        
+        .destination-card:hover .safety-dot {
+          transform: scale(1.3);
         }
 
+        /* Buttons */
         .destination-buttons {
           display: flex;
           gap: 12px;
+          transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
         .destination-btn {
           flex: 1;
@@ -278,11 +425,11 @@ export const DestinationCard = ({
           font-size: 0.95rem;
           font-weight: 600;
           padding: 0.7rem;
-          transition: transform 0.15s ease;
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
           min-height: 44px;
         }
         .destination-btn:hover:not(:disabled) {
-          transform: translateY(-1px);
+          transform: translateY(-2px);
         }
         .destination-btn:disabled {
           opacity: 0.6;
@@ -307,6 +454,7 @@ export const DestinationCard = ({
         <div className="destination-content">
           <h2 className="destination-title">{name}</h2>
 
+          {/* state name under the title with pin */}
           <div className="destination-location">
             <MapPin />
             <span>{country}</span>
@@ -347,8 +495,9 @@ export const DestinationCard = ({
                     country
                   )}/${encodeURIComponent(name)}`
                 );
+                // Scroll to top after navigation
                 setTimeout(() => {
-                  window.scrollTo({ top: 0, behavior: "smooth" });
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
                 }, 100);
               }}
             >
