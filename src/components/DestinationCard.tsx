@@ -162,34 +162,82 @@ export const DestinationCard = ({
 
         /* Advanced hover effects */
         .destination-card:hover {
-          box-shadow: 0 14px 40px rgba(0,0,0,0.25);
-          transform: translateY(-10px);
+          box-shadow: 
+            0 20px 60px rgba(0,0,0,0.15),
+            0 0 0 1px rgba(255,255,255,0.1) inset;
+          transform: translateY(-8px) scale(1.02);
           z-index: 100;
         }
 
-        /* Gradient glow border on hover */
+        /* Dynamic animated outline effect */
         .destination-card::before {
           content: "";
           position: absolute;
-          inset: 0;
-          border-radius: inherit;
-          padding: 2px;
-          background: linear-gradient(135deg, #ff6b6b, #f8cdda, #4facfe, #00f2fe);
-          background-size: 400% 400%;
-          background-position: 0% 0%;
-          z-index: 0;
+          inset: -3px;
+          border-radius: calc(1rem + 3px);
+          padding: 3px;
+          background: linear-gradient(
+            45deg, 
+            #667eea 0%, 
+            #764ba2 25%, 
+            #f093fb 50%, 
+            #f5576c 75%, 
+            #4facfe 100%
+          );
+          background-size: 300% 300%;
+          background-position: 0% 50%;
+          z-index: -1;
           opacity: 0;
           -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
           -webkit-mask-composite: xor;
           mask-composite: exclude;
           pointer-events: none;
-          transition: opacity 0.3s ease-in;
+          transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+          animation: none;
         }
 
         .destination-card.is-hovered::before {
           opacity: 1;
-          background-position: 100% 100%;
-          transition: opacity 0.3s ease-out, background-position 1.5s ease-out;
+          background-position: 100% 50%;
+          inset: -4px;
+          animation: pulseOutline 2s ease-in-out infinite;
+        }
+
+        /* Pulsing outline animation */
+        @keyframes pulseOutline {
+          0%, 100% {
+            background-position: 0% 50%;
+            filter: blur(0px) brightness(1);
+          }
+          50% {
+            background-position: 100% 50%;
+            filter: blur(0.5px) brightness(1.2);
+          }
+        }
+
+        /* Premium glass morphism outline */
+        .destination-card::after {
+          content: "";
+          position: absolute;
+          inset: 0;
+          border-radius: inherit;
+          border: 2px solid transparent;
+          background: linear-gradient(135deg, 
+            rgba(255,255,255,0.4) 0%, 
+            rgba(255,255,255,0.1) 50%, 
+            rgba(255,255,255,0.6) 100%
+          ) border-box;
+          -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+          -webkit-mask-composite: xor;
+          mask-composite: exclude;
+          opacity: 0;
+          transition: opacity 0.3s ease;
+          pointer-events: none;
+          z-index: 2;
+        }
+
+        .destination-card.is-hovered::after {
+          opacity: 1;
         }
 
         /* Image */
@@ -492,4 +540,4 @@ export const DestinationCard = ({
       </div>
     </Card>
   );
-};
+}; 
