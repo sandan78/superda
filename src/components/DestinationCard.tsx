@@ -149,12 +149,11 @@ export const DestinationCard = ({
           box-shadow: 0 6px 20px rgba(255, 255, 255, 0.08);
         }
 
-        /* --- Brighter Hover Glow --- */
+        /* --- Hover (shadow + lift) stays --- */
         .destination-card:hover {
-          box-shadow: 0 12px 32px rgba(255, 255, 255, 0.35),
-                      0 0 20px rgba(255, 255, 255, 0.25);
+          box-shadow: 0 12px 32px rgba(255, 255, 255, 0.25);
           transform: translateY(-8px);
-          border: 1px solid rgba(255, 255, 255, 0.6);
+          border: 1px solid rgba(255, 255, 255, 0.5);
           z-index: 100;
         }
 
@@ -177,7 +176,7 @@ export const DestinationCard = ({
           transition: transform 0.4s ease-out, filter 0.3s ease-out;
         }
 
-        /* Removed cinematic scaling and streak effect */
+        /* removed cinematic scaling + lighting streak */
 
         /* Match pill */
         .destination-badge {
@@ -400,4 +399,4 @@ export const DestinationCard = ({
       </div>
     </Card>
   );
-};
+}; 
