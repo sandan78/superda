@@ -72,7 +72,7 @@ export const DestinationCard = ({
   };
 
   const handleGetGoingPlans = () => {
-    const existing = selectedPlans.find( 
+    const existing = selectedPlans.find(
       (plan) => plan.name === name && plan.region === country
     );
     if (!existing) {
@@ -114,19 +114,6 @@ export const DestinationCard = ({
     low: "#e65151",
   };
 
-  const getSafetyIcon = () => {
-    switch (safetyLevel) {
-      case "high":
-        return "🟢";
-      case "medium":
-        return "🟡";
-      case "low":
-        return "🔴";
-      default:
-        return "";
-    }
-  };
-
   const handleImageError = (
     e: React.SyntheticEvent<HTMLImageElement, Event>
   ) => {
@@ -149,11 +136,15 @@ export const DestinationCard = ({
           overflow: hidden;
           display: flex;
           flex-direction: column;
-          transition: transform 0.25s ease, box-shadow 0.25s ease;
+          transition: transform 0.25s ease, box-shadow 0.25s ease, border 0.25s ease;
         }
         .destination-card:hover {
-          box-shadow: 0px 10px 28px rgba(0,0,0,0.6);
-          transform: translateY(-6px);
+          transform: translateY(-8px) scale(1.02);
+          box-shadow:
+            0 12px 28px rgba(0, 0, 0, 0.35),
+            0 6px 18px rgba(0, 0, 0, 0.20),
+            0 0 18px rgba(255, 255, 255, 0.25);
+          border: 1px solid rgba(255, 255, 255, 0.3);
         }
 
         /* Image */
@@ -199,7 +190,6 @@ export const DestinationCard = ({
           justify-content: space-between;
         }
 
-        /* Title + Location block */
         .destination-title {
           font-size: 1.35rem;
           font-weight: 1500;
@@ -214,18 +204,15 @@ export const DestinationCard = ({
           gap: 6px;
           font-size: 0.92rem;
           font-weight: 500;
-          color: #6b7280; /* muted gray */
-          margin-top: 6px;   /* tight under title */
-          margin-bottom: 10px; /* space above description */
+          color: #6b7280;
+          margin-top: 6px;
+          margin-bottom: 10px;
         }
         .destination-location svg {
           width: 16px;
           height: 16px;
-          flex: 0 0 16px;
-          vertical-align: middle;
         }
 
-        /* Description */
         .destination-description {
           font-size: 0.96rem;
           line-height: 1.55;
@@ -238,20 +225,17 @@ export const DestinationCard = ({
           overflow: hidden;
         }
 
-        /* Content wrapper for consistent spacing */
         .destination-content {
           flex-grow: 1;
           display: flex;
           flex-direction: column;
         }
 
-        /* Bottom section */
         .destination-bottom {
           margin-top: auto;
           padding-top: 12px;
         }
 
-        /* Meta row (time, price, safety) */
         .destination-info-row {
           display: flex;
           align-items: center;
@@ -265,7 +249,6 @@ export const DestinationCard = ({
           display: inline-flex;
           align-items: center;
           gap: 16px;
-          white-space: nowrap;
         }
         .meta-item {
           display: inline-flex;
@@ -285,7 +268,6 @@ export const DestinationCard = ({
           display: inline-block;
         }
 
-        /* Buttons */
         .destination-buttons {
           display: flex;
           gap: 12px;
@@ -325,7 +307,6 @@ export const DestinationCard = ({
         <div className="destination-content">
           <h2 className="destination-title">{name}</h2>
 
-          {/* state name under the title with pin */}
           <div className="destination-location">
             <MapPin />
             <span>{country}</span>
@@ -360,22 +341,14 @@ export const DestinationCard = ({
           <div className="destination-buttons">
             <Button
               className="destination-btn"
-              onClick={() =>
-                navigate(
-                  `/destination/${encodeURIComponent(
-                    country
-                  )}/${encodeURIComponent(name)}`
-                )
-              }
               onClick={() => {
                 navigate(
                   `/destination/${encodeURIComponent(
                     country
                   )}/${encodeURIComponent(name)}`
                 );
-                // Scroll to top after navigation
                 setTimeout(() => {
-                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                  window.scrollTo({ top: 0, behavior: "smooth" });
                 }, 100);
               }}
             >
