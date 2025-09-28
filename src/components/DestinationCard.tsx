@@ -149,30 +149,6 @@ export const DestinationCard = ({
           box-shadow: 0 8px 30px rgba(31, 38, 135, 0.25);
         }
 
-        /* Fix gradient glow replay */
-        .destination-card::before {
-          content: "";
-          position: absolute;
-          inset: 0;
-          border-radius: inherit;
-          padding: 2px;
-          background: linear-gradient(135deg, #ff6b6b, #f8cdda, #4facfe, #00f2fe);
-          background-size: 400% 400%;
-          background-position: 0% 0%;
-          z-index: 0;
-          opacity: 0;
-          -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-          -webkit-mask-composite: xor;
-          mask-composite: exclude;
-          pointer-events: none;
-          transition: none; /* ✅ Snap-back, no replay */
-        }
-        .destination-card.is-hovered::before {
-          opacity: 1;
-          background-position: 100% 100%;
-          transition: opacity 0.3s ease-out, background-position 1.5s ease-out;
-        }
-
         /* Hover effects */
         .destination-card:hover {
           box-shadow: 0 18px 45px rgba(31, 38, 135, 0.3);
@@ -205,7 +181,7 @@ export const DestinationCard = ({
           filter: brightness(0.85);
         }
 
-        /* Shiny streak effect */
+        /* Shiny streak effect (only on hover-in, no replay on out) */
         .destination-img-wrap::after {
           content: "";
           position: absolute;
@@ -222,11 +198,11 @@ export const DestinationCard = ({
           transform: skewX(-20deg);
           z-index: 2;
           pointer-events: none;
-          transition: none; /* ✅ No animation replay */
+          transition: none;
         }
         .destination-card.is-hovered .destination-img-wrap::after {
           left: 125%;
-          transition: left 0.6s ease-out; /* animate only on hover-in */
+          transition: left 0.6s ease-out;
         }
 
         /* Match pill */
