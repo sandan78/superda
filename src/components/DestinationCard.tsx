@@ -149,7 +149,7 @@ export const DestinationCard = ({
           box-shadow: 0 6px 20px rgba(255, 255, 255, 0.08);
         }
 
-        /* --- ✨ Cinematic Hover --- */
+        /* --- Hover (shadow + lift) stays --- */
         .destination-card:hover {
           box-shadow: 0 12px 32px rgba(255, 255, 255, 0.25);
           transform: translateY(-8px);
@@ -176,34 +176,7 @@ export const DestinationCard = ({
           transition: transform 0.4s ease-out, filter 0.3s ease-out;
         }
 
-        .destination-card.is-hovered .destination-img {
-          transform: scale(1.04);
-          filter: brightness(0.75); /* darker, cinematic */
-        }
-
-        /* Minimal light streak */
-        .destination-img-wrap::after {
-          content: "";
-          position: absolute;
-          top: 0;
-          left: -75%;
-          width: 50%;
-          height: 100%;
-          background: linear-gradient(
-            120deg,
-            rgba(255, 255, 255, 0) 0%,
-            rgba(255, 255, 255, 0.4) 50%,
-            rgba(255, 255, 255, 0) 100%
-          );
-          transform: skewX(-20deg);
-          z-index: 2;
-          pointer-events: none;
-          transition: none;
-        }
-        .destination-card.is-hovered .destination-img-wrap::after {
-          left: 125%;
-          transition: left 0.6s ease-out;
-        }
+        /* removed cinematic scaling + lighting streak */
 
         /* Match pill */
         .destination-badge {
@@ -426,4 +399,4 @@ export const DestinationCard = ({
       </div>
     </Card>
   );
-};  
+};
