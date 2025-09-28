@@ -74,7 +74,7 @@ export const DestinationCard = ({
   };
 
   const handleGetGoingPlans = () => {
-    const existing = selectedPlans.find( 
+    const existing = selectedPlans.find(
       (plan) => plan.name === name && plan.region === country
     );
     if (!existing) {
@@ -116,19 +116,6 @@ export const DestinationCard = ({
     low: "#e65151",
   };
 
-  const getSafetyIcon = () => {
-    switch (safetyLevel) {
-      case "high":
-        return "🟢";
-      case "medium":
-        return "🟡";
-      case "low":
-        return "🔴";
-      default:
-        return "";
-    }
-  };
-
   const handleImageError = (
     e: React.SyntheticEvent<HTMLImageElement, Event>
   ) => {
@@ -137,17 +124,18 @@ export const DestinationCard = ({
   };
 
   return (
-    <Card 
-      className={`destination-card h-full ${isHovered ? 'is-hovered' : ''}`}
+    <Card
+      className={`destination-card h-full ${isHovered ? "is-hovered" : ""}`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
       <style>{`
         .destination-card {
-          background: #fff;
+          background: rgba(255, 255, 255, 0.1);
           border-radius: 1rem;
-          box-shadow: 0 6px 22px rgba(0,0,0,0.08);
-          border: 1px solid #ececec;
+          border: 1px solid rgba(255, 255, 255, 0.25);
+          backdrop-filter: blur(16px) saturate(150%);
+          -webkit-backdrop-filter: blur(16px) saturate(150%);
           width: 100%;
           height: 100%;
           font-family: 'Inter', Arial, sans-serif;
@@ -155,50 +143,27 @@ export const DestinationCard = ({
           overflow: hidden;
           display: flex;
           flex-direction: column;
-          transition: transform 0.25s ease, box-shadow 0.25s ease;
+          transition: transform 0.25s ease, box-shadow 0.25s ease, border 0.3s ease;
           position: relative;
           isolation: isolate;
+          box-shadow: 0 8px 30px rgba(31, 38, 135, 0.25);
         }
 
-        /* Advanced hover effects */
+        /* Hover effects */
         .destination-card:hover {
-          box-shadow: 0 14px 40px rgba(0,0,0,0.25);
+          box-shadow: 0 18px 45px rgba(31, 38, 135, 0.3);
           transform: translateY(-10px);
+          border: 1px solid rgba(255, 255, 255, 0.45);
           z-index: 100;
         }
 
-        /* Gradient glow border on hover */
-        .destination-card::before {
-          content: "";
-          position: absolute;
-          inset: 0;
-          border-radius: inherit;
-          padding: 2px;
-          background: linear-gradient(135deg, #ff6b6b, #f8cdda, #4facfe, #00f2fe);
-          background-size: 400% 400%;
-          background-position: 0% 0%;
-          z-index: 0;
-          opacity: 0;
-          -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-          -webkit-mask-composite: xor;
-          mask-composite: exclude;
-          pointer-events: none;
-          transition: opacity 0.3s ease-in;
-        }
-
-        .destination-card.is-hovered::before {
-          opacity: 1;
-          background-position: 100% 100%;
-          transition: opacity 0.3s ease-out, background-position 1.5s ease-out;
-        }
-
-        /* Image */
+        /* Image wrapper */
         .destination-img-wrap {
           position: relative;
           height: 200px;
           width: 100%;
           overflow: hidden;
-          background: #f2f4f7;
+          background: rgba(255,255,255,0.06);
           flex-shrink: 0;
           z-index: 1;
         }
@@ -211,7 +176,6 @@ export const DestinationCard = ({
           transition: transform 0.4s ease-out, filter 0.3s ease-out;
         }
 
-        /* Image hover effects */
         .destination-card.is-hovered .destination-img {
           transform: scale(1.06);
           filter: brightness(0.85);
@@ -241,17 +205,12 @@ export const DestinationCard = ({
           left: 125%;
         }
 
-        .destination-card:not(.is-hovered) .destination-img-wrap::after {
-          left: -75%;
-          transition: none;
-        }
-
-        /* Top-right match pill */
+        /* Match pill */
         .destination-badge {
           position: absolute;
           top: 12px;
           right: 12px;
-          background: #1f1f1f;
+          background: rgba(30,30,30,0.6);
           color: #fff;
           font-weight: 700;
           border-radius: 999px;
@@ -261,8 +220,9 @@ export const DestinationCard = ({
           display: inline-flex;
           align-items: center;
           gap: 6px;
-          box-shadow: 0 6px 14px rgba(0,0,0,0.2);
+          box-shadow: 0 6px 14px rgba(0,0,0,0.25);
           z-index: 3;
+          backdrop-filter: blur(8px);
         }
 
         /* Body */
@@ -274,41 +234,36 @@ export const DestinationCard = ({
           justify-content: space-between;
           position: relative;
           z-index: 2;
-          background: rgba(255, 255, 255, 0.92);
-          backdrop-filter: blur(6px);
+          background: rgba(255, 255, 255, 0.08);
+          backdrop-filter: blur(20px);
+          -webkit-backdrop-filter: blur(20px);
+          border-radius: 0 0 1rem 1rem;
         }
 
-        /* Title + Location block */
         .destination-title {
           font-size: 1.35rem;
           font-weight: 600;
           margin: 0;
-          color: #101828;
+          color: #ffffff;
           letter-spacing: -0.01em;
           line-height: 1.2;
         }
+
         .destination-location {
           display: inline-flex;
           align-items: center;
           gap: 6px;
           font-size: 0.92rem;
           font-weight: 500;
-          color: #6b7280;
+          color: #e6e6e6;
           margin-top: 6px;
           margin-bottom: 10px;
         }
-        .destination-location svg {
-          width: 16px;
-          height: 16px;
-          flex: 0 0 16px;
-          vertical-align: middle;
-        }
 
-        /* Description */
         .destination-description {
           font-size: 0.96rem;
           line-height: 1.55;
-          color: #303030;
+          color: #f1f1f1;
           margin: 0 0 12px 0;
           flex-grow: 1;
           display: -webkit-box;
@@ -317,46 +272,36 @@ export const DestinationCard = ({
           overflow: hidden;
         }
 
-        /* Content wrapper for consistent spacing */
-        .destination-content {
-          flex-grow: 1;
-          display: flex;
-          flex-direction: column;
-        }
-
-        /* Bottom section */
-        .destination-bottom {
-          margin-top: auto;
-          padding-top: 12px;
-        }
-
-        /* Meta row (time, price, safety) */
         .destination-info-row {
           display: flex;
           align-items: center;
           justify-content: space-between;
           font-size: 0.92rem;
-          color: #475d69;
+          color: #d1d1d1;
           gap: 10px;
           margin-bottom: 16px;
         }
+
         .meta-left {
           display: inline-flex;
           align-items: center;
           gap: 16px;
           white-space: nowrap;
         }
+
         .meta-item {
           display: inline-flex;
           align-items: center;
           gap: 6px;
         }
+
         .safety {
           display: inline-flex;
           align-items: center;
           gap: 6px;
           font-weight: 700;
         }
+
         .safety-dot {
           width: 10px;
           height: 10px;
@@ -364,11 +309,11 @@ export const DestinationCard = ({
           display: inline-block;
         }
 
-        /* Buttons */
         .destination-buttons {
           display: flex;
           gap: 12px;
         }
+
         .destination-btn {
           flex: 1;
           border-radius: 0.8rem;
@@ -378,25 +323,18 @@ export const DestinationCard = ({
           transition: transform 0.15s ease;
           min-height: 44px;
         }
+
         .destination-btn:hover:not(:disabled) {
           transform: translateY(-1px);
         }
+
         .destination-btn:disabled {
           opacity: 0.6;
           cursor: not-allowed;
         }
-
-        /* Performance optimizations */
-        .destination-card * {
-          backface-visibility: hidden;
-          -webkit-backface-visibility: hidden;
-        }
-
-        .destination-card {
-          contain: layout style paint;
-        }
       `}</style>
 
+      {/* Image Section */}
       <div className="destination-img-wrap">
         <img
           src={image || "/placeholder.svg"}
@@ -410,16 +348,14 @@ export const DestinationCard = ({
         </div>
       </div>
 
+      {/* Body */}
       <div className="destination-body">
         <div className="destination-content">
           <h2 className="destination-title">{name}</h2>
-
-          {/* state name under the title with pin */}
           <div className="destination-location">
             <MapPin />
             <span>{country}</span>
           </div>
-
           <div className="destination-description">{description}</div>
         </div>
 
@@ -432,7 +368,6 @@ export const DestinationCard = ({
               </span>
               <span className="meta-item">💰 {priceRange}</span>
             </div>
-
             <div
               className="safety"
               style={{ color: safetyColor[safetyLevel] }}
@@ -455,9 +390,8 @@ export const DestinationCard = ({
                     country
                   )}/${encodeURIComponent(name)}`
                 );
-                // Scroll to top after navigation
                 setTimeout(() => {
-                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                  window.scrollTo({ top: 0, behavior: "smooth" });
                 }, 100);
               }}
             >
