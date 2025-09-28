@@ -4,6 +4,7 @@ import { MapPin, Clock, Heart, Plus, Check } from "lucide-react";
 import { usePlans } from "@/contexts/PlanContext";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 
 interface DestinationCardProps {
   name: string;
@@ -39,6 +40,7 @@ export const DestinationCard = ({
   const { addPlan, selectedPlans, updatePlanStatus } = usePlans();
   const { toast } = useToast();
   const navigate = useNavigate();
+  const [isHovered, setIsHovered] = useState(false);
 
   const isSelected = selectedPlans.some(
     (plan) => plan.name === name && plan.region === country
@@ -135,7 +137,11 @@ export const DestinationCard = ({
   };
 
   return (
-    <Card className="destination-card h-full">
+    <Card 
+      className={`destination-card h-full ${isHovered ? 'is-hovered' : ''}`}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
       <style>{`
         .destination-card {
           background: #fff;
@@ -150,10 +156,40 @@ export const DestinationCard = ({
           display: flex;
           flex-direction: column;
           transition: transform 0.25s ease, box-shadow 0.25s ease;
+          position: relative;
+          isolation: isolate;
         }
+
+        /* Advanced hover effects */
         .destination-card:hover {
-          box-shadow: 0px 10px 28px rgba(0,0,0,0.6);
-          transform: translateY(-6px);
+          box-shadow: 0 14px 40px rgba(0,0,0,0.25);
+          transform: translateY(-10px);
+          z-index: 100;
+        }
+
+        /* Gradient glow border on hover */
+        .destination-card::before {
+          content: "";
+          position: absolute;
+          inset: 0;
+          border-radius: inherit;
+          padding: 2px;
+          background: linear-gradient(135deg, #ff6b6b, #f8cdda, #4facfe, #00f2fe);
+          background-size: 400% 400%;
+          background-position: 0% 0%;
+          z-index: 0;
+          opacity: 0;
+          -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+          -webkit-mask-composite: xor;
+          mask-composite: exclude;
+          pointer-events: none;
+          transition: opacity 0.3s ease-in;
+        }
+
+        .destination-card.is-hovered::before {
+          opacity: 1;
+          background-position: 100% 100%;
+          transition: opacity 0.3s ease-out, background-position 1.5s ease-out;
         }
 
         /* Image */
@@ -164,12 +200,50 @@ export const DestinationCard = ({
           overflow: hidden;
           background: #f2f4f7;
           flex-shrink: 0;
+          z-index: 1;
         }
+
         .destination-img {
           width: 100%;
           height: 100%;
           object-fit: cover;
           display: block;
+          transition: transform 0.4s ease-out, filter 0.3s ease-out;
+        }
+
+        /* Image hover effects */
+        .destination-card.is-hovered .destination-img {
+          transform: scale(1.06);
+          filter: brightness(0.85);
+        }
+
+        /* Shiny streak effect */
+        .destination-img-wrap::after {
+          content: "";
+          position: absolute;
+          top: 0;
+          left: -75%;
+          width: 50%;
+          height: 100%;
+          background: linear-gradient(
+            120deg,
+            rgba(255, 255, 255, 0) 0%,
+            rgba(255, 255, 255, 0.6) 50%,
+            rgba(255, 255, 255, 0) 100%
+          );
+          transform: skewX(-20deg);
+          z-index: 2;
+          pointer-events: none;
+          transition: left 0.6s ease-out;
+        }
+
+        .destination-card.is-hovered .destination-img-wrap::after {
+          left: 125%;
+        }
+
+        .destination-card:not(.is-hovered) .destination-img-wrap::after {
+          left: -75%;
+          transition: none;
         }
 
         /* Top-right match pill */
@@ -188,6 +262,7 @@ export const DestinationCard = ({
           align-items: center;
           gap: 6px;
           box-shadow: 0 6px 14px rgba(0,0,0,0.2);
+          z-index: 3;
         }
 
         /* Body */
@@ -197,12 +272,16 @@ export const DestinationCard = ({
           flex-direction: column;
           flex-grow: 1;
           justify-content: space-between;
+          position: relative;
+          z-index: 2;
+          background: rgba(255, 255, 255, 0.92);
+          backdrop-filter: blur(6px);
         }
 
         /* Title + Location block */
         .destination-title {
           font-size: 1.35rem;
-          font-weight: 1500;
+          font-weight: 600;
           margin: 0;
           color: #101828;
           letter-spacing: -0.01em;
@@ -214,9 +293,9 @@ export const DestinationCard = ({
           gap: 6px;
           font-size: 0.92rem;
           font-weight: 500;
-          color: #6b7280; /* muted gray */
-          margin-top: 6px;   /* tight under title */
-          margin-bottom: 10px; /* space above description */
+          color: #6b7280;
+          margin-top: 6px;
+          margin-bottom: 10px;
         }
         .destination-location svg {
           width: 16px;
@@ -306,6 +385,16 @@ export const DestinationCard = ({
           opacity: 0.6;
           cursor: not-allowed;
         }
+
+        /* Performance optimizations */
+        .destination-card * {
+          backface-visibility: hidden;
+          -webkit-backface-visibility: hidden;
+        }
+
+        .destination-card {
+          contain: layout style paint;
+        }
       `}</style>
 
       <div className="destination-img-wrap">
@@ -360,13 +449,6 @@ export const DestinationCard = ({
           <div className="destination-buttons">
             <Button
               className="destination-btn"
-              onClick={() =>
-                navigate(
-                  `/destination/${encodeURIComponent(
-                    country
-                  )}/${encodeURIComponent(name)}`
-                )
-              }
               onClick={() => {
                 navigate(
                   `/destination/${encodeURIComponent(
