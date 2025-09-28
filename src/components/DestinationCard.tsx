@@ -146,14 +146,14 @@ export const DestinationCard = ({
           transition: transform 0.25s ease, box-shadow 0.25s ease, border 0.3s ease;
           position: relative;
           isolation: isolate;
-          box-shadow: 0 8px 30px rgba(31, 38, 135, 0.25);
+          box-shadow: 0 6px 20px rgba(255, 255, 255, 0.08);
         }
 
-        /* Hover effects */
+        /* --- ✨ Cinematic Hover --- */
         .destination-card:hover {
-          box-shadow: 0 18px 45px rgba(31, 38, 135, 0.3);
-          transform: translateY(-10px);
-          border: 1px solid rgba(255, 255, 255, 0.45);
+          box-shadow: 0 12px 32px rgba(255, 255, 255, 0.25);
+          transform: translateY(-8px);
+          border: 1px solid rgba(255, 255, 255, 0.5);
           z-index: 100;
         }
 
@@ -177,11 +177,11 @@ export const DestinationCard = ({
         }
 
         .destination-card.is-hovered .destination-img {
-          transform: scale(1.06);
-          filter: brightness(0.85);
+          transform: scale(1.04);
+          filter: brightness(0.75); /* darker, cinematic */
         }
 
-        /* Shiny streak effect (only on hover-in, no replay on out) */
+        /* Minimal light streak */
         .destination-img-wrap::after {
           content: "";
           position: absolute;
@@ -192,7 +192,7 @@ export const DestinationCard = ({
           background: linear-gradient(
             120deg,
             rgba(255, 255, 255, 0) 0%,
-            rgba(255, 255, 255, 0.6) 50%,
+            rgba(255, 255, 255, 0.4) 50%,
             rgba(255, 255, 255, 0) 100%
           );
           transform: skewX(-20deg);
@@ -426,4 +426,4 @@ export const DestinationCard = ({
       </div>
     </Card>
   );
-}; 
+};
