@@ -74,7 +74,7 @@ export const DestinationCard = ({
   };
 
   const handleGetGoingPlans = () => {
-    const existing = selectedPlans.find( 
+    const existing = selectedPlans.find(
       (plan) => plan.name === name && plan.region === country
     );
     if (!existing) {
@@ -116,19 +116,6 @@ export const DestinationCard = ({
     low: "#e65151",
   };
 
-  const getSafetyIcon = () => {
-    switch (safetyLevel) {
-      case "high":
-        return "🟢";
-      case "medium":
-        return "🟡";
-      case "low":
-        return "🔴";
-      default:
-        return "";
-    }
-  };
-
   const handleImageError = (
     e: React.SyntheticEvent<HTMLImageElement, Event>
   ) => {
@@ -137,8 +124,8 @@ export const DestinationCard = ({
   };
 
   return (
-    <Card 
-      className={`destination-card h-full ${isHovered ? 'is-hovered' : ''}`}
+    <Card
+      className={`destination-card h-full ${isHovered ? "is-hovered" : ""}`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
@@ -151,7 +138,6 @@ export const DestinationCard = ({
           width: 100%;
           height: 100%;
           font-family: 'Inter', Arial, sans-serif;
-          padding: 0;
           overflow: hidden;
           display: flex;
           flex-direction: column;
@@ -160,39 +146,51 @@ export const DestinationCard = ({
           isolation: isolate;
         }
 
-        /* Advanced hover effects */
+        /* Outline glow effect */
+        .destination-card::after {
+          content: "";
+          position: absolute;
+          inset: 0;
+          border-radius: inherit;
+          padding: 2px; /* thickness of glowing border */
+          background: conic-gradient(
+            from 0deg,
+            #ff6b6b,
+            #f8cdda,
+            #4facfe,
+            #00f2fe,
+            #ff6b6b
+          );
+          background-size: 200% 200%;
+          background-position: 0% 50%;
+          animation: none;
+          -webkit-mask: 
+            linear-gradient(#fff 0 0) content-box, 
+            linear-gradient(#fff 0 0);
+          -webkit-mask-composite: xor;
+          mask-composite: exclude;
+          opacity: 0;
+          transition: opacity 0.4s ease;
+          pointer-events: none;
+          z-index: 2;
+        }
+
+        .destination-card.is-hovered::after {
+          opacity: 1;
+          animation: borderGlow 3s linear infinite;
+        }
+
+        @keyframes borderGlow {
+          0% { background-position: 0% 50%; }
+          100% { background-position: 400% 50%; }
+        }
+
         .destination-card:hover {
           box-shadow: 0 14px 40px rgba(0,0,0,0.25);
           transform: translateY(-10px);
           z-index: 100;
         }
 
-        /* Gradient glow border on hover */
-        .destination-card::before {
-          content: "";
-          position: absolute;
-          inset: 0;
-          border-radius: inherit;
-          padding: 2px;
-          background: linear-gradient(135deg, #ff6b6b, #f8cdda, #4facfe, #00f2fe);
-          background-size: 400% 400%;
-          background-position: 0% 0%;
-          z-index: 0;
-          opacity: 0;
-          -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-          -webkit-mask-composite: xor;
-          mask-composite: exclude;
-          pointer-events: none;
-          transition: opacity 0.3s ease-in;
-        }
-
-        .destination-card.is-hovered::before {
-          opacity: 1;
-          background-position: 100% 100%;
-          transition: opacity 0.3s ease-out, background-position 1.5s ease-out;
-        }
-
-        /* Image */
         .destination-img-wrap {
           position: relative;
           height: 200px;
@@ -211,13 +209,11 @@ export const DestinationCard = ({
           transition: transform 0.4s ease-out, filter 0.3s ease-out;
         }
 
-        /* Image hover effects */
         .destination-card.is-hovered .destination-img {
           transform: scale(1.06);
           filter: brightness(0.85);
         }
 
-        /* Shiny streak effect */
         .destination-img-wrap::after {
           content: "";
           position: absolute;
@@ -241,12 +237,6 @@ export const DestinationCard = ({
           left: 125%;
         }
 
-        .destination-card:not(.is-hovered) .destination-img-wrap::after {
-          left: -75%;
-          transition: none;
-        }
-
-        /* Top-right match pill */
         .destination-badge {
           position: absolute;
           top: 12px;
@@ -265,7 +255,6 @@ export const DestinationCard = ({
           z-index: 3;
         }
 
-        /* Body */
         .destination-body {
           padding: 20px;
           display: flex;
@@ -278,7 +267,6 @@ export const DestinationCard = ({
           backdrop-filter: blur(6px);
         }
 
-        /* Title + Location block */
         .destination-title {
           font-size: 1.35rem;
           font-weight: 600;
@@ -297,14 +285,7 @@ export const DestinationCard = ({
           margin-top: 6px;
           margin-bottom: 10px;
         }
-        .destination-location svg {
-          width: 16px;
-          height: 16px;
-          flex: 0 0 16px;
-          vertical-align: middle;
-        }
 
-        /* Description */
         .destination-description {
           font-size: 0.96rem;
           line-height: 1.55;
@@ -317,20 +298,11 @@ export const DestinationCard = ({
           overflow: hidden;
         }
 
-        /* Content wrapper for consistent spacing */
-        .destination-content {
-          flex-grow: 1;
-          display: flex;
-          flex-direction: column;
-        }
-
-        /* Bottom section */
         .destination-bottom {
           margin-top: auto;
           padding-top: 12px;
         }
 
-        /* Meta row (time, price, safety) */
         .destination-info-row {
           display: flex;
           align-items: center;
@@ -364,7 +336,6 @@ export const DestinationCard = ({
           display: inline-block;
         }
 
-        /* Buttons */
         .destination-buttons {
           display: flex;
           gap: 12px;
@@ -385,16 +356,6 @@ export const DestinationCard = ({
           opacity: 0.6;
           cursor: not-allowed;
         }
-
-        /* Performance optimizations */
-        .destination-card * {
-          backface-visibility: hidden;
-          -webkit-backface-visibility: hidden;
-        }
-
-        .destination-card {
-          contain: layout style paint;
-        }
       `}</style>
 
       <div className="destination-img-wrap">
@@ -414,7 +375,6 @@ export const DestinationCard = ({
         <div className="destination-content">
           <h2 className="destination-title">{name}</h2>
 
-          {/* state name under the title with pin */}
           <div className="destination-location">
             <MapPin />
             <span>{country}</span>
@@ -455,9 +415,8 @@ export const DestinationCard = ({
                     country
                   )}/${encodeURIComponent(name)}`
                 );
-                // Scroll to top after navigation
                 setTimeout(() => {
-                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                  window.scrollTo({ top: 0, behavior: "smooth" });
                 }, 100);
               }}
             >
