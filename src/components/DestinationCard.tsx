@@ -125,63 +125,38 @@ export const DestinationCard = ({
     <Card className="destination-card h-full">
       <style>{`
         .destination-card {
-          position: relative;
           background: #fff;
           border-radius: 1rem;
           box-shadow: 0 6px 22px rgba(0,0,0,0.08);
           border: 1px solid #ececec;
-          width: 100%;
-          height: 100%;
-          font-family: 'Inter', Arial, sans-serif;
-          padding: 0;
+          position: relative;
           overflow: hidden;
-          display: flex;
-          flex-direction: column;
           transition: transform 0.35s ease, box-shadow 0.35s ease;
         }
 
+        /* gradient glow frame */
         .destination-card::before {
           content: "";
           position: absolute;
           inset: 0;
           border-radius: inherit;
           padding: 2px;
-          background: linear-gradient(135deg, #00c6ff, #0072ff);
-          -webkit-mask: linear-gradient(#fff 0 0) content-box, 
-                         linear-gradient(#fff 0 0);
+          background: linear-gradient(135deg, #ff6b6b, #f8cdda, #4facfe, #00f2fe);
+          background-size: 400% 400%;
+          z-index: 0;
+          opacity: 0;
+          transition: opacity 0.4s ease, background-position 2s ease;
+          -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
           -webkit-mask-composite: xor;
                   mask-composite: exclude;
-          opacity: 0;
-          transition: opacity 0.4s ease;
-          pointer-events: none;
         }
 
-        .destination-card::after {
-          content: "";
-          position: absolute;
-          top: -50%;
-          left: -50%;
-          width: 200%;
-          height: 200%;
-          background: linear-gradient(120deg, 
-            transparent 0%, rgba(255,255,255,0.25) 50%, transparent 100%);
-          transform: rotate(25deg) translateY(-100%);
-          transition: transform 0.8s ease;
-          pointer-events: none;
-        }
-
-        .destination-card:hover {
-          box-shadow: 0px 14px 36px rgba(0,0,0,0.25);
-          transform: translateY(-10px);
-        }
         .destination-card:hover::before {
           opacity: 1;
-        }
-        .destination-card:hover::after {
-          transform: rotate(25deg) translateY(100%);
+          background-position: 100% 100%;
         }
 
-        /* Image */
+        /* image wrap effects */
         .destination-img-wrap {
           position: relative;
           height: 200px;
@@ -189,38 +164,51 @@ export const DestinationCard = ({
           overflow: hidden;
           background: #f2f4f7;
           flex-shrink: 0;
+          z-index: 1;
         }
+
         .destination-img {
           width: 100%;
           height: 100%;
           object-fit: cover;
           display: block;
-          transition: transform 0.4s ease;
+          transition: transform 0.6s ease, filter 0.4s ease;
         }
+
         .destination-card:hover .destination-img {
-          transform: scale(1.05);
+          transform: scale(1.06);
+          filter: brightness(0.85);
         }
 
-        /* Top-right match pill */
-        .destination-badge {
+        /* shiny streak on hover */
+        .destination-img-wrap::after {
+          content: "";
           position: absolute;
-          top: 12px;
-          right: 12px;
-          background: #1f1f1f;
-          color: #fff;
-          font-weight: 700;
-          border-radius: 999px;
-          padding: 6px 12px;
-          font-size: 0.86rem;
-          line-height: 1;
-          display: inline-flex;
-          align-items: center;
-          gap: 6px;
-          box-shadow: 0 6px 14px rgba(0,0,0,0.2);
+          top: 0;
+          left: -75%;
+          width: 50%;
+          height: 100%;
+          background: linear-gradient(
+            120deg,
+            rgba(255, 255, 255, 0) 0%,
+            rgba(255, 255, 255, 0.6) 50%,
+            rgba(255, 255, 255, 0) 100%
+          );
+          transform: skewX(-20deg);
+          transition: left 0.8s ease;
+          z-index: 2;
         }
 
-        /* Body */
+        .destination-card:hover .destination-img-wrap::after {
+          left: 125%;
+        }
+
+        /* body sits above glow */
         .destination-body {
+          position: relative;
+          z-index: 2;
+          background: rgba(255, 255, 255, 0.92);
+          backdrop-filter: blur(6px);
           padding: 20px;
           display: flex;
           flex-direction: column;
@@ -228,10 +216,16 @@ export const DestinationCard = ({
           justify-content: space-between;
         }
 
-        /* Title + Location block */
+        /* card lift + stronger shadow */
+        .destination-card:hover {
+          transform: translateY(-10px);
+          box-shadow: 0 14px 40px rgba(0,0,0,0.25);
+        }
+
+        /* Title + Location */
         .destination-title {
           font-size: 1.35rem;
-          font-weight: 700;
+          font-weight: 1500;
           margin: 0;
           color: #101828;
           letter-spacing: -0.01em;
@@ -247,10 +241,6 @@ export const DestinationCard = ({
           margin-top: 6px;
           margin-bottom: 10px;
         }
-        .destination-location svg {
-          width: 16px;
-          height: 16px;
-        }
 
         /* Description */
         .destination-description {
@@ -265,20 +255,7 @@ export const DestinationCard = ({
           overflow: hidden;
         }
 
-        /* Content wrapper */
-        .destination-content {
-          flex-grow: 1;
-          display: flex;
-          flex-direction: column;
-        }
-
-        /* Bottom */
-        .destination-bottom {
-          margin-top: auto;
-          padding-top: 12px;
-        }
-
-        /* Info row */
+        /* Meta row */
         .destination-info-row {
           display: flex;
           align-items: center;
@@ -288,23 +265,27 @@ export const DestinationCard = ({
           gap: 10px;
           margin-bottom: 16px;
         }
+
         .meta-left {
           display: inline-flex;
           align-items: center;
           gap: 16px;
           white-space: nowrap;
         }
+
         .meta-item {
           display: inline-flex;
           align-items: center;
           gap: 6px;
         }
+
         .safety {
           display: inline-flex;
           align-items: center;
           gap: 6px;
           font-weight: 700;
         }
+
         .safety-dot {
           width: 10px;
           height: 10px;
@@ -327,11 +308,30 @@ export const DestinationCard = ({
           min-height: 44px;
         }
         .destination-btn:hover:not(:disabled) {
-          transform: translateY(-2px);
+          transform: translateY(-1px);
         }
         .destination-btn:disabled {
           opacity: 0.6;
           cursor: not-allowed;
+        }
+
+        /* Match badge */
+        .destination-badge {
+          position: absolute;
+          top: 12px;
+          right: 12px;
+          background: #1f1f1f;
+          color: #fff;
+          font-weight: 700;
+          border-radius: 999px;
+          padding: 6px 12px;
+          font-size: 0.86rem;
+          line-height: 1;
+          display: inline-flex;
+          align-items: center;
+          gap: 6px;
+          box-shadow: 0 6px 14px rgba(0,0,0,0.2);
+          z-index: 3;
         }
       `}</style>
 
@@ -367,9 +367,11 @@ export const DestinationCard = ({
               </span>
               <span className="meta-item">💰 {priceRange}</span>
             </div>
+
             <div
               className="safety"
               style={{ color: safetyColor[safetyLevel] }}
+              aria-label={`${safetyLevel} safety`}
             >
               <span
                 className="safety-dot"
@@ -384,7 +386,9 @@ export const DestinationCard = ({
               className="destination-btn"
               onClick={() => {
                 navigate(
-                  `/destination/${encodeURIComponent(country)}/${encodeURIComponent(name)}`
+                  `/destination/${encodeURIComponent(
+                    country
+                  )}/${encodeURIComponent(name)}`
                 );
                 setTimeout(() => {
                   window.scrollTo({ top: 0, behavior: "smooth" });
