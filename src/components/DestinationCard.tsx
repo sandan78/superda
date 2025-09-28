@@ -74,7 +74,7 @@ export const DestinationCard = ({
   };
 
   const handleGetGoingPlans = () => {
-    const existing = selectedPlans.find(
+    const existing = selectedPlans.find( 
       (plan) => plan.name === name && plan.region === country
     );
     if (!existing) {
@@ -116,6 +116,19 @@ export const DestinationCard = ({
     low: "#e65151",
   };
 
+  const getSafetyIcon = () => {
+    switch (safetyLevel) {
+      case "high":
+        return "🟢";
+      case "medium":
+        return "🟡";
+      case "low":
+        return "🔴";
+      default:
+        return "";
+    }
+  };
+
   const handleImageError = (
     e: React.SyntheticEvent<HTMLImageElement, Event>
   ) => {
@@ -123,257 +136,328 @@ export const DestinationCard = ({
     if (target.src !== "/placeholder.svg") target.src = "/placeholder.svg";
   };
 
-  // Base card styles - applied immediately
-  const cardStyles = {
-    background: '#fff',
-    borderRadius: '1rem',
-    boxShadow: isHovered ? '0 14px 40px rgba(0,0,0,0.25)' : '0 6px 22px rgba(0,0,0,0.08)',
-    border: '1px solid #ececec',
-    position: 'relative' as const,
-    overflow: 'hidden' as const,
-    transform: isHovered ? 'translateY(-10px) translateZ(0)' : 'translateY(0) translateZ(0)',
-    transition: 'transform 0.25s ease-out, box-shadow 0.25s ease-out',
-    zIndex: isHovered ? 100 : 1,
-  };
-
-  const imageStyles = {
-    width: '100%',
-    height: '100%',
-    objectFit: 'cover' as const,
-    display: 'block' as const,
-    transform: isHovered ? 'scale(1.06)' : 'scale(1)',
-    filter: isHovered ? 'brightness(0.85)' : 'brightness(1)',
-    transition: 'transform 0.4s ease-out, filter 0.3s ease-out',
-  };
-
   return (
     <Card 
-      className="h-full"
-      style={cardStyles}
+      className={`destination-card h-full ${isHovered ? 'is-hovered' : ''}`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      {/* Gradient glow overlay */}
-      <div
-        style={{
-          position: 'absolute',
-          inset: 0,
-          borderRadius: 'inherit',
-          padding: '2px',
-          background: 'linear-gradient(135deg, #ff6b6b, #f8cdda, #4facfe, #00f2fe)',
-          backgroundSize: '400% 400%',
-          backgroundPosition: isHovered ? '100% 100%' : '0% 0%',
-          opacity: isHovered ? 1 : 0,
-          WebkitMask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
-          WebkitMaskComposite: 'xor',
-          maskComposite: 'exclude',
-          pointerEvents: 'none',
-          transition: 'opacity 0.3s ease-out, background-position 1.5s ease-out',
-          zIndex: 0,
-        }}
-      />
+      <style>{`
+        .destination-card {
+          background: #fff;
+          border-radius: 1rem;
+          box-shadow: 0 6px 22px rgba(0,0,0,0.08);
+          border: 1px solid #ececec;
+          width: 100%;
+          height: 100%;
+          font-family: 'Inter', Arial, sans-serif;
+          padding: 0;
+          overflow: hidden;
+          display: flex;
+          flex-direction: column;
+          transition: transform 0.25s ease, box-shadow 0.25s ease;
+          position: relative;
+          isolation: isolate;
+        }
 
-      {/* Image section */}
-      <div
-        style={{
-          position: 'relative',
-          height: '200px',
-          width: '100%',
-          overflow: 'hidden',
-          background: '#f2f4f7',
-          flexShrink: 0,
-          zIndex: 1,
-        }}
-      >
+        /* Advanced hover effects */
+        .destination-card:hover {
+          box-shadow: 0 14px 40px rgba(0,0,0,0.25);
+          transform: translateY(-10px);
+          z-index: 100;
+        }
+
+        /* Gradient glow border on hover */
+        .destination-card::before {
+          content: "";
+          position: absolute;
+          inset: 0;
+          border-radius: inherit;
+          padding: 2px;
+          background: linear-gradient(135deg, #ff6b6b, #f8cdda, #4facfe, #00f2fe);
+          background-size: 400% 400%;
+          background-position: 0% 0%;
+          z-index: 0;
+          opacity: 0;
+          -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+          -webkit-mask-composite: xor;
+          mask-composite: exclude;
+          pointer-events: none;
+          transition: opacity 0.3s ease-in;
+        }
+
+        .destination-card.is-hovered::before {
+          opacity: 1;
+          background-position: 100% 100%;
+          transition: opacity 0.3s ease-out, background-position 1.5s ease-out;
+        }
+
+        /* Image */
+        .destination-img-wrap {
+          position: relative;
+          height: 200px;
+          width: 100%;
+          overflow: hidden;
+          background: #f2f4f7;
+          flex-shrink: 0;
+          z-index: 1;
+        }
+
+        .destination-img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          display: block;
+          transition: transform 0.4s ease-out, filter 0.3s ease-out;
+        }
+
+        /* Image hover effects */
+        .destination-card.is-hovered .destination-img {
+          transform: scale(1.06);
+          filter: brightness(0.85);
+        }
+
+        /* Shiny streak effect */
+        .destination-img-wrap::after {
+          content: "";
+          position: absolute;
+          top: 0;
+          left: -75%;
+          width: 50%;
+          height: 100%;
+          background: linear-gradient(
+            120deg,
+            rgba(255, 255, 255, 0) 0%,
+            rgba(255, 255, 255, 0.6) 50%,
+            rgba(255, 255, 255, 0) 100%
+          );
+          transform: skewX(-20deg);
+          z-index: 2;
+          pointer-events: none;
+          transition: left 0.6s ease-out;
+        }
+
+        .destination-card.is-hovered .destination-img-wrap::after {
+          left: 125%;
+        }
+
+        .destination-card:not(.is-hovered) .destination-img-wrap::after {
+          left: -75%;
+          transition: none;
+        }
+
+        /* Top-right match pill */
+        .destination-badge {
+          position: absolute;
+          top: 12px;
+          right: 12px;
+          background: #1f1f1f;
+          color: #fff;
+          font-weight: 700;
+          border-radius: 999px;
+          padding: 6px 12px;
+          font-size: 0.86rem;
+          line-height: 1;
+          display: inline-flex;
+          align-items: center;
+          gap: 6px;
+          box-shadow: 0 6px 14px rgba(0,0,0,0.2);
+          z-index: 3;
+        }
+
+        /* Body */
+        .destination-body {
+          padding: 20px;
+          display: flex;
+          flex-direction: column;
+          flex-grow: 1;
+          justify-content: space-between;
+          position: relative;
+          z-index: 2;
+          background: rgba(255, 255, 255, 0.92);
+          backdrop-filter: blur(6px);
+        }
+
+        /* Title + Location block */
+        .destination-title {
+          font-size: 1.35rem;
+          font-weight: 600;
+          margin: 0;
+          color: #101828;
+          letter-spacing: -0.01em;
+          line-height: 1.2;
+        }
+        .destination-location {
+          display: inline-flex;
+          align-items: center;
+          gap: 6px;
+          font-size: 0.92rem;
+          font-weight: 500;
+          color: #6b7280;
+          margin-top: 6px;
+          margin-bottom: 10px;
+        }
+        .destination-location svg {
+          width: 16px;
+          height: 16px;
+          flex: 0 0 16px;
+          vertical-align: middle;
+        }
+
+        /* Description */
+        .destination-description {
+          font-size: 0.96rem;
+          line-height: 1.55;
+          color: #303030;
+          margin: 0 0 12px 0;
+          flex-grow: 1;
+          display: -webkit-box;
+          -webkit-line-clamp: 3;
+          -webkit-box-orient: vertical;
+          overflow: hidden;
+        }
+
+        /* Content wrapper for consistent spacing */
+        .destination-content {
+          flex-grow: 1;
+          display: flex;
+          flex-direction: column;
+        }
+
+        /* Bottom section */
+        .destination-bottom {
+          margin-top: auto;
+          padding-top: 12px;
+        }
+
+        /* Meta row (time, price, safety) */
+        .destination-info-row {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          font-size: 0.92rem;
+          color: #475d69;
+          gap: 10px;
+          margin-bottom: 16px;
+        }
+        .meta-left {
+          display: inline-flex;
+          align-items: center;
+          gap: 16px;
+          white-space: nowrap;
+        }
+        .meta-item {
+          display: inline-flex;
+          align-items: center;
+          gap: 6px;
+        }
+        .safety {
+          display: inline-flex;
+          align-items: center;
+          gap: 6px;
+          font-weight: 700;
+        }
+        .safety-dot {
+          width: 10px;
+          height: 10px;
+          border-radius: 999px;
+          display: inline-block;
+        }
+
+        /* Buttons */
+        .destination-buttons {
+          display: flex;
+          gap: 12px;
+        }
+        .destination-btn {
+          flex: 1;
+          border-radius: 0.8rem;
+          font-size: 0.95rem;
+          font-weight: 600;
+          padding: 0.7rem;
+          transition: transform 0.15s ease;
+          min-height: 44px;
+        }
+        .destination-btn:hover:not(:disabled) {
+          transform: translateY(-1px);
+        }
+        .destination-btn:disabled {
+          opacity: 0.6;
+          cursor: not-allowed;
+        }
+
+        /* Performance optimizations */
+        .destination-card * {
+          backface-visibility: hidden;
+          -webkit-backface-visibility: hidden;
+        }
+
+        .destination-card {
+          contain: layout style paint;
+        }
+      `}</style>
+
+      <div className="destination-img-wrap">
         <img
           src={image || "/placeholder.svg"}
           alt={`${name}, ${country}`}
-          style={imageStyles}
+          className="destination-img"
           onError={handleImageError}
         />
-        
-        {/* Shiny streak effect */}
-        <div
-          style={{
-            position: 'absolute',
-            top: 0,
-            left: isHovered ? '125%' : '-75%',
-            width: '50%',
-            height: '100%',
-            background: 'linear-gradient(120deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.6) 50%, rgba(255, 255, 255, 0) 100%)',
-            transform: 'skewX(-20deg)',
-            transition: isHovered ? 'left 0.6s ease-out' : 'none',
-            zIndex: 2,
-            pointerEvents: 'none',
-          }}
-        />
-
-        {/* Match badge */}
-        <div
-          style={{
-            position: 'absolute',
-            top: '12px',
-            right: '12px',
-            background: '#1f1f1f',
-            color: '#fff',
-            fontWeight: 700,
-            borderRadius: '999px',
-            padding: '6px 12px',
-            fontSize: '0.86rem',
-            lineHeight: 1,
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '6px',
-            boxShadow: '0 6px 14px rgba(0,0,0,0.2)',
-            zIndex: 3,
-          }}
-        >
+        <div className="destination-badge">
           <Heart style={{ height: 16, width: 16 }} />
           {matchPercentage}% Match
         </div>
       </div>
 
-      {/* Content section */}
-      <div
-        style={{
-          position: 'relative',
-          zIndex: 2,
-          background: 'rgba(255, 255, 255, 0.92)',
-          backdropFilter: 'blur(6px)',
-          padding: '20px',
-          display: 'flex',
-          flexDirection: 'column',
-          flexGrow: 1,
-          justifyContent: 'space-between',
-        }}
-      >
-        <div>
-          <h2
-            style={{
-              fontSize: '1.35rem',
-              fontWeight: 600,
-              margin: 0,
-              color: '#101828',
-              letterSpacing: '-0.01em',
-              lineHeight: 1.2,
-            }}
-          >
-            {name}
-          </h2>
-          <div
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '6px',
-              fontSize: '0.92rem',
-              fontWeight: 500,
-              color: '#6b7280',
-              marginTop: '6px',
-              marginBottom: '10px',
-            }}
-          >
+      <div className="destination-body">
+        <div className="destination-content">
+          <h2 className="destination-title">{name}</h2>
+
+          {/* state name under the title with pin */}
+          <div className="destination-location">
             <MapPin />
             <span>{country}</span>
           </div>
-          <div
-            style={{
-              fontSize: '0.96rem',
-              lineHeight: 1.55,
-              color: '#303030',
-              margin: '0 0 12px 0',
-              flexGrow: 1,
-              display: '-webkit-box',
-              WebkitLineClamp: 3,
-              WebkitBoxOrient: 'vertical',
-              overflow: 'hidden',
-            }}
-          >
-            {description}
-          </div>
+
+          <div className="destination-description">{description}</div>
         </div>
 
-        <div>
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              fontSize: '0.92rem',
-              color: '#475d69',
-              gap: '10px',
-              marginBottom: '16px',
-            }}
-          >
-            <div
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '16px',
-                whiteSpace: 'nowrap',
-              }}
-            >
-              <span
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '6px',
-                }}
-              >
+        <div className="destination-bottom">
+          <div className="destination-info-row">
+            <div className="meta-left">
+              <span className="meta-item">
                 <Clock style={{ width: 16, height: 16 }} />
                 {bestTime}
               </span>
-              <span
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '6px',
-                }}
-              >
-                💰 {priceRange}
-              </span>
+              <span className="meta-item">💰 {priceRange}</span>
             </div>
 
             <div
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '6px',
-                fontWeight: 700,
-                color: safetyColor[safetyLevel],
-              }}
+              className="safety"
+              style={{ color: safetyColor[safetyLevel] }}
+              aria-label={`${safetyLevel} safety`}
             >
               <span
-                style={{
-                  width: '10px',
-                  height: '10px',
-                  borderRadius: '999px',
-                  display: 'inline-block',
-                  backgroundColor: safetyColor[safetyLevel],
-                }}
+                className="safety-dot"
+                style={{ backgroundColor: safetyColor[safetyLevel] }}
               />
               {safetyLevel} Safety
             </div>
           </div>
 
-          <div style={{ display: 'flex', gap: '12px' }}>
+          <div className="destination-buttons">
             <Button
-              style={{
-                flex: 1,
-                borderRadius: '0.8rem',
-                fontSize: '0.95rem',
-                fontWeight: 600,
-                padding: '0.7rem',
-                minHeight: '44px',
-                transition: 'transform 0.15s ease',
-              }}
+              className="destination-btn"
               onClick={() => {
                 navigate(
                   `/destination/${encodeURIComponent(
                     country
                   )}/${encodeURIComponent(name)}`
                 );
+                // Scroll to top after navigation
                 setTimeout(() => {
-                  window.scrollTo({ top: 0, behavior: "smooth" });
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
                 }, 100);
               }}
             >
@@ -381,34 +465,13 @@ export const DestinationCard = ({
             </Button>
 
             {!hideGetGoingPlans && (
-              <Button
-                style={{
-                  flex: 1,
-                  borderRadius: '0.8rem',
-                  fontSize: '0.95rem',
-                  fontWeight: 600,
-                  padding: '0.7rem',
-                  minHeight: '44px',
-                  transition: 'transform 0.15s ease',
-                }}
-                onClick={handleGetGoingPlans}
-              >
+              <Button className="destination-btn" onClick={handleGetGoingPlans}>
                 Get Going
               </Button>
             )}
 
             <Button
-              style={{
-                flex: 1,
-                borderRadius: '0.8rem',
-                fontSize: '0.95rem',
-                fontWeight: 600,
-                padding: '0.7rem',
-                minHeight: '44px',
-                transition: 'transform 0.15s ease',
-                opacity: isSelected ? 0.6 : 1,
-                cursor: isSelected ? 'not-allowed' : 'pointer',
-              }}
+              className="destination-btn"
               onClick={handleAddToPlan}
               disabled={isSelected}
             >
