@@ -124,7 +124,6 @@ export const DestinationCard = ({
   return (
     <Card className="destination-card h-full">
       <style>{`
-        /* Base card styling with isolation */
         .destination-card {
           background: #fff;
           border-radius: 1rem;
@@ -133,36 +132,29 @@ export const DestinationCard = ({
           position: relative;
           overflow: hidden;
           transition: transform 0.35s ease, box-shadow 0.35s ease;
-          isolation: isolate; /* Creates new stacking context */
-          transform: translateZ(0); /* Force hardware acceleration */
-          will-change: transform; /* Optimize for animations */
+          isolation: isolate; /* Contains the hover effects */
         }
 
-        /* Gradient glow frame - only affects THIS card */
+        /* Contained gradient glow effect */
         .destination-card::before {
           content: "";
           position: absolute;
-          inset: 0;
-          border-radius: inherit;
-          padding: 2px;
+          inset: -2px; /* Extends slightly beyond the card */
+          border-radius: 1.1rem; /* Slightly larger to contain the glow */
           background: linear-gradient(135deg, #ff6b6b, #f8cdda, #4facfe, #00f2fe);
           background-size: 400% 400%;
-          z-index: 0;
+          z-index: -1; /* Places it behind the card content */
           opacity: 0;
           transition: opacity 0.4s ease, background-position 2s ease;
-          -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-          -webkit-mask-composite: xor;
-          mask-composite: exclude;
-          pointer-events: none; /* Prevents interference with other elements */
+          pointer-events: none; /* Prevents interference with clicks */
         }
 
-        /* Only activate glow on direct hover of THIS card */
         .destination-card:hover::before {
           opacity: 1;
           background-position: 100% 100%;
         }
 
-        /* Image wrapper with contained effects */
+        /* Image wrap effects */
         .destination-img-wrap {
           position: relative;
           height: 200px;
@@ -171,26 +163,22 @@ export const DestinationCard = ({
           background: #f2f4f7;
           flex-shrink: 0;
           z-index: 1;
-          transform: translateZ(0); /* Create compositing layer */
         }
 
-        /* Image scaling - only affects THIS card's image */
         .destination-img {
           width: 100%;
           height: 100%;
           object-fit: cover;
           display: block;
           transition: transform 0.6s ease, filter 0.4s ease;
-          transform: scale(1); /* Explicit initial state */
         }
 
-        /* Image hover effect - scoped to this card only */
         .destination-card:hover .destination-img {
           transform: scale(1.06);
           filter: brightness(0.85);
         }
 
-        /* Shiny streak effect - contained within image wrapper */
+        /* Contained shiny streak effect */
         .destination-img-wrap::after {
           content: "";
           position: absolute;
@@ -207,44 +195,47 @@ export const DestinationCard = ({
           transform: skewX(-20deg);
           transition: left 0.8s ease;
           z-index: 2;
-          pointer-events: none;
         }
 
-        /* Streak animation - only on THIS card hover */
         .destination-card:hover .destination-img-wrap::after {
           left: 125%;
         }
 
-        /* Body with proper layering */
+        /* Card content container */
         .destination-body {
           position: relative;
           z-index: 2;
-          background: rgba(255, 255, 255, 0.92);
-          backdrop-filter: blur(6px);
+          background: #fff; /* Solid background to contain effects */
           padding: 20px;
           display: flex;
           flex-direction: column;
           flex-grow: 1;
           justify-content: space-between;
+          border-radius: 0 0 1rem 1rem; /* Match card border radius */
         }
 
-        /* Card lift effect - isolated to THIS card */
+        /* Card lift with contained shadow */
         .destination-card:hover {
-          transform: translateY(-10px) translateZ(0);
+          transform: translateY(-10px);
           box-shadow: 0 14px 40px rgba(0,0,0,0.25);
-          z-index: 10; /* Ensure hovered card appears above others */
         }
 
-        /* Typography */
+        /* Content wrapper */
+        .destination-content {
+          flex-grow: 1;
+          display: flex;
+          flex-direction: column;
+        }
+
+        /* Title + Location */
         .destination-title {
           font-size: 1.35rem;
-          font-weight: 600;
+          font-weight: 1500;
           margin: 0;
           color: #101828;
           letter-spacing: -0.01em;
           line-height: 1.2;
         }
-
         .destination-location {
           display: inline-flex;
           align-items: center;
@@ -256,6 +247,7 @@ export const DestinationCard = ({
           margin-bottom: 10px;
         }
 
+        /* Description */
         .destination-description {
           font-size: 0.96rem;
           line-height: 1.55;
@@ -268,7 +260,13 @@ export const DestinationCard = ({
           overflow: hidden;
         }
 
-        /* Meta information row */
+        /* Bottom section */
+        .destination-bottom {
+          margin-top: auto;
+          padding-top: 12px;
+        }
+
+        /* Meta row */
         .destination-info-row {
           display: flex;
           align-items: center;
@@ -306,12 +304,11 @@ export const DestinationCard = ({
           display: inline-block;
         }
 
-        /* Button styling */
+        /* Buttons */
         .destination-buttons {
           display: flex;
           gap: 12px;
         }
-
         .destination-btn {
           flex: 1;
           border-radius: 0.8rem;
@@ -321,11 +318,9 @@ export const DestinationCard = ({
           transition: transform 0.15s ease;
           min-height: 44px;
         }
-
         .destination-btn:hover:not(:disabled) {
           transform: translateY(-1px);
         }
-
         .destination-btn:disabled {
           opacity: 0.6;
           cursor: not-allowed;
@@ -348,12 +343,6 @@ export const DestinationCard = ({
           gap: 6px;
           box-shadow: 0 6px 14px rgba(0,0,0,0.2);
           z-index: 3;
-        }
-
-        /* Prevent layout shift during hover */
-        .destination-card * {
-          backface-visibility: hidden;
-          -webkit-backface-visibility: hidden;
         }
       `}</style>
 
