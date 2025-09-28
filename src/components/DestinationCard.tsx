@@ -72,7 +72,7 @@ export const DestinationCard = ({
   };
 
   const handleGetGoingPlans = () => {
-    const existing = selectedPlans.find(
+    const existing = selectedPlans.find( 
       (plan) => plan.name === name && plan.region === country
     );
     if (!existing) {
@@ -114,6 +114,19 @@ export const DestinationCard = ({
     low: "#e65151",
   };
 
+  const getSafetyIcon = () => {
+    switch (safetyLevel) {
+      case "high":
+        return "🟢";
+      case "medium":
+        return "🟡";
+      case "low":
+        return "🔴";
+      default:
+        return "";
+    }
+  };
+
   const handleImageError = (
     e: React.SyntheticEvent<HTMLImageElement, Event>
   ) => {
@@ -129,34 +142,62 @@ export const DestinationCard = ({
           border-radius: 1rem;
           box-shadow: 0 6px 22px rgba(0,0,0,0.08);
           border: 1px solid #ececec;
-          position: relative;
+          width: 100%;
+          height: 100%;
+          font-family: 'Inter', Arial, sans-serif;
+          padding: 0;
           overflow: hidden;
-          transition: transform 0.35s ease, box-shadow 0.35s ease;
+          display: flex;
+          flex-direction: column;
+          transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+          position: relative;
+          cursor: pointer;
         }
 
-        /* gradient glow frame */
+        /* Creative Border Glow Effect */
         .destination-card::before {
-          content: "";
+          content: '';
           position: absolute;
-          inset: 0;
-          border-radius: inherit;
-          padding: 2px;
-          background: linear-gradient(135deg, #ff6b6b, #f8cdda, #4facfe, #00f2fe);
+          top: -2px;
+          left: -2px;
+          right: -2px;
+          bottom: -2px;
+          background: linear-gradient(
+            45deg,
+            #ff6b6b,
+            #4ecdc4,
+            #45b7d1,
+            #96ceb4,
+            #feca57,
+            #ff9ff3
+          );
           background-size: 400% 400%;
-          z-index: 0;
+          border-radius: 1.1rem;
+          z-index: -1;
           opacity: 0;
-          transition: opacity 0.4s ease, background-position 2s ease;
-          -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-          -webkit-mask-composite: xor;
-                  mask-composite: exclude;
+          transition: opacity 0.4s ease;
+          animation: gradientShift 3s ease infinite;
+        }
+
+        @keyframes gradientShift {
+          0% { background-position: 0% 50%; }
+          50% { background-position: 100% 50%; }
+          100% { background-position: 0% 50%; }
+        }
+
+        .destination-card:hover {
+          transform: translateY(-8px) rotateX(5deg) rotateY(2deg);
+          box-shadow: 
+            0 20px 40px rgba(0, 0, 0, 0.15),
+            0 15px 30px rgba(0, 0, 0, 0.1),
+            0 0 80px rgba(100, 255, 218, 0.1);
         }
 
         .destination-card:hover::before {
           opacity: 1;
-          background-position: 100% 100%;
         }
 
-        /* image wrap effects */
+        /* Image Hover Magic */
         .destination-img-wrap {
           position: relative;
           height: 200px;
@@ -164,7 +205,6 @@ export const DestinationCard = ({
           overflow: hidden;
           background: #f2f4f7;
           flex-shrink: 0;
-          z-index: 1;
         }
 
         .destination-img {
@@ -172,150 +212,16 @@ export const DestinationCard = ({
           height: 100%;
           object-fit: cover;
           display: block;
-          transition: transform 0.6s ease, filter 0.4s ease;
+          transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+          filter: saturate(0.9);
         }
 
         .destination-card:hover .destination-img {
-          transform: scale(1.06);
-          filter: brightness(0.85);
+          transform: scale(1.15) rotate(1deg);
+          filter: saturate(1.2) brightness(1.1);
         }
 
-        /* shiny streak on hover */
-        .destination-img-wrap::after {
-          content: "";
-          position: absolute;
-          top: 0;
-          left: -75%;
-          width: 50%;
-          height: 100%;
-          background: linear-gradient(
-            120deg,
-            rgba(255, 255, 255, 0) 0%,
-            rgba(255, 255, 255, 0.6) 50%,
-            rgba(255, 255, 255, 0) 100%
-          );
-          transform: skewX(-20deg);
-          transition: left 0.8s ease;
-          z-index: 2;
-        }
-
-        .destination-card:hover .destination-img-wrap::after {
-          left: 125%;
-        }
-
-        /* body sits above glow */
-        .destination-body {
-          position: relative;
-          z-index: 2;
-          background: rgba(255, 255, 255, 0.92);
-          backdrop-filter: blur(6px);
-          padding: 20px;
-          display: flex;
-          flex-direction: column;
-          flex-grow: 1;
-          justify-content: space-between;
-        }
-
-        /* card lift + stronger shadow */
-        .destination-card:hover {
-          transform: translateY(-10px);
-          box-shadow: 0 14px 40px rgba(0,0,0,0.25);
-        }
-
-        /* Title + Location */
-        .destination-title {
-          font-size: 1.35rem;
-          font-weight: 1500;
-          margin: 0;
-          color: #101828;
-          letter-spacing: -0.01em;
-          line-height: 1.2;
-        }
-        .destination-location {
-          display: inline-flex;
-          align-items: center;
-          gap: 6px;
-          font-size: 0.92rem;
-          font-weight: 500;
-          color: #6b7280;
-          margin-top: 6px;
-          margin-bottom: 10px;
-        }
-
-        /* Description */
-        .destination-description {
-          font-size: 0.96rem;
-          line-height: 1.55;
-          color: #303030;
-          margin: 0 0 12px 0;
-          flex-grow: 1;
-          display: -webkit-box;
-          -webkit-line-clamp: 3;
-          -webkit-box-orient: vertical;
-          overflow: hidden;
-        }
-
-        /* Meta row */
-        .destination-info-row {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          font-size: 0.92rem;
-          color: #475d69;
-          gap: 10px;
-          margin-bottom: 16px;
-        }
-
-        .meta-left {
-          display: inline-flex;
-          align-items: center;
-          gap: 16px;
-          white-space: nowrap;
-        }
-
-        .meta-item {
-          display: inline-flex;
-          align-items: center;
-          gap: 6px;
-        }
-
-        .safety {
-          display: inline-flex;
-          align-items: center;
-          gap: 6px;
-          font-weight: 700;
-        }
-
-        .safety-dot {
-          width: 10px;
-          height: 10px;
-          border-radius: 999px;
-          display: inline-block;
-        }
-
-        /* Buttons */
-        .destination-buttons {
-          display: flex;
-          gap: 12px;
-        }
-        .destination-btn {
-          flex: 1;
-          border-radius: 0.8rem;
-          font-size: 0.95rem;
-          font-weight: 600;
-          padding: 0.7rem;
-          transition: transform 0.15s ease;
-          min-height: 44px;
-        }
-        .destination-btn:hover:not(:disabled) {
-          transform: translateY(-1px);
-        }
-        .destination-btn:disabled {
-          opacity: 0.6;
-          cursor: not-allowed;
-        }
-
-        /* Match badge */
+        /* Floating Badge Effect */
         .destination-badge {
           position: absolute;
           top: 12px;
@@ -331,7 +237,251 @@ export const DestinationCard = ({
           align-items: center;
           gap: 6px;
           box-shadow: 0 6px 14px rgba(0,0,0,0.2);
-          z-index: 3;
+          transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+          z-index: 2;
+        }
+
+        .destination-card:hover .destination-badge {
+          transform: translateY(-8px) scale(1.1);
+          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+          box-shadow: 0 12px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        /* Body Content */
+        .destination-body {
+          padding: 20px;
+          display: flex;
+          flex-direction: column;
+          flex-grow: 1;
+          justify-content: space-between;
+          background: #fff;
+          position: relative;
+          z-index: 1;
+        }
+
+        /* Title Slide-up Effect */
+        .destination-title {
+          font-size: 1.35rem;
+          font-weight: 1500;
+          margin: 0;
+          color: #101828;
+          letter-spacing: -0.01em;
+          line-height: 1.2;
+          transition: all 0.3s ease;
+          transform: translateY(0);
+        }
+
+        .destination-card:hover .destination-title {
+          transform: translateY(-2px);
+          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+        }
+
+        /* Location Pin Bounce */
+        .destination-location {
+          display: inline-flex;
+          align-items: center;
+          gap: 6px;
+          font-size: 0.92rem;
+          font-weight: 500;
+          color: #6b7280;
+          margin-top: 6px;
+          margin-bottom: 10px;
+          transition: all 0.3s ease;
+        }
+
+        .destination-card:hover .destination-location {
+          transform: translateX(5px);
+          color: #4b5563;
+        }
+
+        .destination-location svg {
+          width: 16px;
+          height: 16px;
+          flex: 0 0 16px;
+          vertical-align: middle;
+          transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        .destination-card:hover .destination-location svg {
+          transform: scale(1.3) rotate(15deg);
+          color: #ef4444;
+        }
+
+        /* Description Glow */
+        .destination-description {
+          font-size: 0.96rem;
+          line-height: 1.55;
+          color: #303030;
+          margin: 0 0 12px 0;
+          flex-grow: 1;
+          display: -webkit-box;
+          -webkit-line-clamp: 3;
+          -webkit-box-orient: vertical;
+          overflow: hidden;
+          transition: all 0.3s ease;
+        }
+
+        .destination-card:hover .destination-description {
+          transform: translateY(-1px);
+          text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Content wrapper */
+        .destination-content {
+          flex-grow: 1;
+          display: flex;
+          flex-direction: column;
+        }
+
+        /* Bottom section */
+        .destination-bottom {
+          margin-top: auto;
+          padding-top: 12px;
+          transition: transform 0.3s ease;
+        }
+
+        .destination-card:hover .destination-bottom {
+          transform: translateY(-3px);
+        }
+
+        /* Meta info floating effect */
+        .destination-info-row {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          font-size: 0.92rem;
+          color: #475d69;
+          gap: 10px;
+          margin-bottom: 16px;
+          transition: all 0.3s ease;
+        }
+
+        .destination-card:hover .destination-info-row {
+          transform: translateY(-2px);
+        }
+
+        .meta-left {
+          display: inline-flex;
+          align-items: center;
+          gap: 16px;
+          white-space: nowrap;
+        }
+
+        .meta-item {
+          display: inline-flex;
+          align-items: center;
+          gap: 6px;
+          transition: all 0.3s ease;
+          padding: 4px 8px;
+          border-radius: 8px;
+          background: rgba(248, 250, 252, 0.8);
+        }
+
+        .destination-card:hover .meta-item {
+          transform: translateY(-2px);
+          background: rgba(255, 255, 255, 0.9);
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Safety indicator pulse */
+        .safety {
+          display: inline-flex;
+          align-items: center;
+          gap: 6px;
+          font-weight: 700;
+          transition: all 0.3s ease;
+          padding: 4px 8px;
+          border-radius: 8px;
+          background: rgba(248, 250, 252, 0.8);
+        }
+
+        .destination-card:hover .safety {
+          transform: scale(1.05);
+          background: rgba(255, 255, 255, 0.9);
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+          animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+          0% { transform: scale(1.05); }
+          50% { transform: scale(1.08); }
+          100% { transform: scale(1.05); }
+        }
+
+        .safety-dot {
+          width: 10px;
+          height: 10px;
+          border-radius: 999px;
+          display: inline-block;
+          transition: all 0.3s ease;
+        }
+
+        .destination-card:hover .safety-dot {
+          transform: scale(1.5);
+          box-shadow: 0 0 15px currentColor;
+          animation: glow 1.5s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+          from { box-shadow: 0 0 10px currentColor; }
+          to { box-shadow: 0 0 20px currentColor, 0 0 30px currentColor; }
+        }
+
+        /* Buttons container */
+        .destination-buttons {
+          display: flex;
+          gap: 12px;
+          transition: transform 0.3s ease;
+        }
+
+        .destination-card:hover .destination-buttons {
+          transform: translateY(-3px);
+        }
+
+        /* Button hover effects */
+        .destination-btn {
+          flex: 1;
+          border-radius: 0.8rem;
+          font-size: 0.95rem;
+          font-weight: 600;
+          padding: 0.7rem;
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+          min-height: 44px;
+          position: relative;
+          overflow: hidden;
+        }
+
+        .destination-btn::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: -100%;
+          width: 100%;
+          height: 100%;
+          background: linear-gradient(
+            90deg,
+            transparent,
+            rgba(255, 255, 255, 0.4),
+            transparent
+          );
+          transition: left 0.6s ease;
+        }
+
+        .destination-btn:hover:not(:disabled)::before {
+          left: 100%;
+        }
+
+        .destination-btn:hover:not(:disabled) {
+          transform: translateY(-3px) scale(1.02);
+          box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .destination-btn:disabled {
+          opacity: 0.6;
+          cursor: not-allowed;
         }
       `}</style>
 
@@ -351,10 +501,12 @@ export const DestinationCard = ({
       <div className="destination-body">
         <div className="destination-content">
           <h2 className="destination-title">{name}</h2>
+
           <div className="destination-location">
             <MapPin />
             <span>{country}</span>
           </div>
+
           <div className="destination-description">{description}</div>
         </div>
 
@@ -391,7 +543,7 @@ export const DestinationCard = ({
                   )}/${encodeURIComponent(name)}`
                 );
                 setTimeout(() => {
-                  window.scrollTo({ top: 0, behavior: "smooth" });
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
                 }, 100);
               }}
             >
