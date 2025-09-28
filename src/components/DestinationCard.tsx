@@ -178,13 +178,14 @@ export const DestinationCard = ({
         }
 
         .destination-card.loaded::before {
-          transition: opacity 0.4s ease, background-position 2s ease;
+          transition: opacity 0.3s ease-in;
         }
 
-        /* Only show glow when explicitly hovered */
+        /* Only show glow when explicitly hovered - no exit animation */
         .destination-card.is-hovered::before {
           opacity: 1;
           background-position: 100% 100%;
+          transition: opacity 0.3s ease-out, background-position 1.5s ease-out;
         }
 
         /* Image wrapper */
@@ -209,13 +210,14 @@ export const DestinationCard = ({
         }
 
         .destination-card.loaded .destination-img {
-          transition: transform 0.6s ease, filter 0.4s ease;
+          transition: transform 0.4s ease-out, filter 0.3s ease-out;
         }
 
         /* Image hover effect - only for hovered card */
         .destination-card.is-hovered .destination-img {
           transform: scale(1.06);
           filter: brightness(0.85);
+          transition: transform 0.4s ease-out, filter 0.3s ease-out;
         }
 
         /* Shiny streak - positioned off-screen initially */
@@ -239,12 +241,19 @@ export const DestinationCard = ({
         }
 
         .destination-card.loaded .destination-img-wrap::after {
-          transition: left 0.8s ease;
+          transition: left 0.6s ease-out;
         }
 
-        /* Streak animation - only for hovered card */
+        /* Streak animation - only for hovered card, no return animation */
         .destination-card.is-hovered .destination-img-wrap::after {
           left: 125%;
+          transition: left 0.6s ease-out;
+        }
+
+        /* Reset streak immediately when not hovered */
+        .destination-card:not(.is-hovered) .destination-img-wrap::after {
+          left: -75%;
+          transition: none;
         }
 
         /* Body styling */
