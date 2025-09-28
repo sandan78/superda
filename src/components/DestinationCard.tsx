@@ -4,7 +4,7 @@ import { MapPin, Clock, Heart, Plus, Check } from "lucide-react";
 import { usePlans } from "@/contexts/PlanContext";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 interface DestinationCardProps {
   name: string;
@@ -16,7 +16,7 @@ interface DestinationCardProps {
   culturalHighlights: string[];
   safetyLevel: "high" | "medium" | "low";
   bestTime: string;
-  priceRange: "$" | "$$" | "$$$";
+  priceRange: "$" | "$" | "$$";
   idealGroupSize?: string;
   groupDescription?: string;
   hideGetGoingPlans?: boolean;
@@ -40,14 +40,7 @@ export const DestinationCard = ({
   const { addPlan, selectedPlans, updatePlanStatus } = usePlans();
   const { toast } = useToast();
   const navigate = useNavigate();
-  const [isLoaded, setIsLoaded] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
-
-  // Prevent initial animation flicker
-  useEffect(() => {
-    const timer = setTimeout(() => setIsLoaded(true), 100);
-    return () => clearTimeout(timer);
-  }, []);
 
   const isSelected = selectedPlans.some(
     (plan) => plan.name === name && plan.region === country
@@ -135,7 +128,7 @@ export const DestinationCard = ({
 
   return (
     <Card 
-      className={`destination-card h-full ${cardId} ${isLoaded ? 'loaded' : ''} ${isHovered ? 'is-hovered' : ''}`}
+      className={`destination-card h-full ${cardId} ${isHovered ? 'is-hovered' : ''}`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
@@ -199,7 +192,7 @@ export const DestinationCard = ({
           z-index: 1;
         }
 
-        /* Image - no initial transitions */
+        /* Image - stable initial state with transitions */
         .destination-img {
           width: 100%;
           height: 100%;
@@ -207,9 +200,6 @@ export const DestinationCard = ({
           display: block;
           transform: scale(1);
           filter: brightness(1);
-        }
-
-        .destination-card.loaded .destination-img {
           transition: transform 0.4s ease-out, filter 0.3s ease-out;
         }
 
@@ -237,10 +227,6 @@ export const DestinationCard = ({
           transform: skewX(-20deg);
           z-index: 2;
           pointer-events: none;
-          /* NO initial transitions */
-        }
-
-        .destination-card.loaded .destination-img-wrap::after {
           transition: left 0.6s ease-out;
         }
 
