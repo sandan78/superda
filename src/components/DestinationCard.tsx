@@ -131,41 +131,30 @@ export const DestinationCard = ({
     >
       <style>{`
         .destination-card {
-          background: rgba(255, 255, 255, 0.1);
-          border-radius: 1rem;
-          border: 1px solid rgba(255, 255, 255, 0.25);
-          backdrop-filter: blur(16px) saturate(150%);
-          -webkit-backdrop-filter: blur(16px) saturate(150%);
-          width: 100%;
-          height: 100%;
-          font-family: 'Inter', Arial, sans-serif;
-          padding: 0;
+          position: relative;
           overflow: hidden;
+          background: rgba(255, 255, 255, 0.08);
+          border-radius: 1rem;
+          border: 1px solid rgba(255, 255, 255, 0.15);
+          backdrop-filter: blur(16px) saturate(150%);
+          transition: transform 0.35s cubic-bezier(0.22,1,0.36,1), border 0.3s ease;
           display: flex;
           flex-direction: column;
-          transition: transform 0.25s ease, box-shadow 0.25s ease, border 0.3s ease;
-          position: relative;
-          isolation: isolate;
-          box-shadow: 0 6px 20px rgba(255, 255, 255, 0.08);
+          height: 100%;
+          contain: layout paint; /* contain effects INSIDE */
         }
 
-        /* --- Hover (shadow + lift) stays --- */
         .destination-card:hover {
-          box-shadow: 0 12px 32px rgba(255, 255, 255, 0.25);
-          transform: translateY(-8px);
-          border: 1px solid rgba(255, 255, 255, 0.5);
-          z-index: 100;
+          transform: translateY(-6px) scale(1.01);
+          border-color: rgba(255,255,255,0.35);
         }
 
-        /* Image wrapper */
+        /* Image with cinematic zoom */
         .destination-img-wrap {
           position: relative;
-          height: 200px;
-          width: 100%;
+          height: 220px;
           overflow: hidden;
-          background: rgba(255,255,255,0.06);
-          flex-shrink: 0;
-          z-index: 1;
+          border-radius: 1rem 1rem 0 0;
         }
 
         .destination-img {
@@ -173,137 +162,134 @@ export const DestinationCard = ({
           height: 100%;
           object-fit: cover;
           display: block;
-          transition: transform 0.4s ease-out, filter 0.3s ease-out;
+          transform: scale(1);
+          filter: brightness(0.85) saturate(1.05);
+          transition: transform 0.8s cubic-bezier(0.22,1,0.36,1), filter 0.5s ease;
         }
 
-        /* removed cinematic scaling + lighting streak */
+        .destination-card:hover .destination-img {
+          transform: scale(1.08);
+          filter: brightness(1) saturate(1.25);
+        }
 
-        /* Match pill */
+        /* Badge inside card with glow */
         .destination-badge {
           position: absolute;
-          top: 12px;
-          right: 12px;
-          background: rgba(30,30,30,0.6);
-          color: #fff;
+          top: 14px;
+          right: 14px;
+          padding: 6px 14px;
+          border-radius: 50px;
+          font-size: 0.85rem;
           font-weight: 700;
-          border-radius: 999px;
-          padding: 6px 12px;
-          font-size: 0.86rem;
-          line-height: 1;
           display: inline-flex;
           align-items: center;
           gap: 6px;
-          box-shadow: 0 6px 14px rgba(0,0,0,0.25);
-          z-index: 3;
-          backdrop-filter: blur(8px);
+          background: rgba(30,30,30,0.75);
+          color: #fff;
+          box-shadow: inset 0 0 6px rgba(255,255,255,0.15), 0 0 10px rgba(255,90,90,0.4);
+          transition: transform 0.4s ease, box-shadow 0.4s ease;
+        }
+
+        .destination-card:hover .destination-badge {
+          transform: scale(1.08);
+          box-shadow: inset 0 0 6px rgba(255,255,255,0.15), 0 0 16px rgba(255,90,90,0.9);
         }
 
         /* Body */
         .destination-body {
           padding: 20px;
+          flex: 1;
           display: flex;
           flex-direction: column;
-          flex-grow: 1;
           justify-content: space-between;
-          position: relative;
-          z-index: 2;
-          background: rgba(255, 255, 255, 0.08);
+          background: rgba(255, 255, 255, 0.06);
           backdrop-filter: blur(20px);
-          -webkit-backdrop-filter: blur(20px);
           border-radius: 0 0 1rem 1rem;
         }
 
         .destination-title {
-          font-size: 1.35rem;
+          font-size: 1.4rem;
           font-weight: 600;
+          color: #fff;
           margin: 0;
-          color: #ffffff;
-          letter-spacing: -0.01em;
-          line-height: 1.2;
+          transition: color 0.35s ease;
+        }
+
+        .destination-card:hover .destination-title {
+          color: #ffd54f;
         }
 
         .destination-location {
-          display: inline-flex;
+          display: flex;
           align-items: center;
           gap: 6px;
-          font-size: 0.92rem;
-          font-weight: 500;
-          color: #e6e6e6;
-          margin-top: 6px;
-          margin-bottom: 10px;
+          font-size: 0.95rem;
+          color: #ddd;
+          margin: 6px 0 12px;
         }
 
         .destination-description {
-          font-size: 0.96rem;
+          color: #eee;
+          font-size: 0.95rem;
           line-height: 1.55;
-          color: #f1f1f1;
-          margin: 0 0 12px 0;
-          flex-grow: 1;
-          display: -webkit-box;
           -webkit-line-clamp: 3;
+          display: -webkit-box;
           -webkit-box-orient: vertical;
           overflow: hidden;
+          margin-bottom: 16px;
         }
 
         .destination-info-row {
           display: flex;
-          align-items: center;
           justify-content: space-between;
-          font-size: 0.92rem;
-          color: #d1d1d1;
-          gap: 10px;
-          margin-bottom: 16px;
-        }
-
-        .meta-left {
-          display: inline-flex;
           align-items: center;
-          gap: 16px;
-          white-space: nowrap;
+          color: #ccc;
+          margin-bottom: 18px;
+          font-size: 0.9rem;
         }
 
-        .meta-item {
-          display: inline-flex;
-          align-items: center;
-          gap: 6px;
-        }
-
-        .safety {
-          display: inline-flex;
-          align-items: center;
-          gap: 6px;
-          font-weight: 700;
-        }
-
-        .safety-dot {
-          width: 10px;
-          height: 10px;
-          border-radius: 999px;
-          display: inline-block;
-        }
-
+        /* Buttons */
         .destination-buttons {
           display: flex;
-          gap: 12px;
+          gap: 10px;
         }
 
         .destination-btn {
           flex: 1;
-          border-radius: 0.8rem;
+          border-radius: 0.7rem;
           font-size: 0.95rem;
           font-weight: 600;
-          padding: 0.7rem;
-          transition: transform 0.15s ease;
           min-height: 44px;
+          background: rgba(255,255,255,0.1);
+          backdrop-filter: blur(10px);
+          transition: all 0.3s ease;
+          color: #fff;
+          border: 1px solid rgba(255,255,255,0.2);
         }
 
         .destination-btn:hover:not(:disabled) {
-          transform: translateY(-1px);
+          transform: translateY(-2px);
+          background: linear-gradient(135deg, #ff8a65, #ff5252);
+          box-shadow: inset 0 0 6px rgba(255,255,255,0.2), 0 8px 18px rgba(0,0,0,0.3);
+          border-color: rgba(255,255,255,0.3);
         }
 
         .destination-btn:disabled {
           opacity: 0.6;
           cursor: not-allowed;
+        }
+
+        .safety {
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          font-weight: 600;
+        }
+
+        .safety-dot {
+          width: 10px;
+          height: 10px;
+          border-radius: 50%;
         }
       `}</style>
 
@@ -323,7 +309,7 @@ export const DestinationCard = ({
 
       {/* Body */}
       <div className="destination-body">
-        <div className="destination-content">
+        <div>
           <h2 className="destination-title">{name}</h2>
           <div className="destination-location">
             <MapPin />
@@ -332,19 +318,18 @@ export const DestinationCard = ({
           <div className="destination-description">{description}</div>
         </div>
 
-        <div className="destination-bottom">
+        <div>
           <div className="destination-info-row">
-            <div className="meta-left">
-              <span className="meta-item">
+            <div className="flex items-center gap-6">
+              <span className="flex items-center gap-2">
                 <Clock style={{ width: 16, height: 16 }} />
                 {bestTime}
               </span>
-              <span className="meta-item">💰 {priceRange}</span>
+              <span className="flex items-center gap-1">💰 {priceRange}</span>
             </div>
             <div
               className="safety"
               style={{ color: safetyColor[safetyLevel] }}
-              aria-label={`${safetyLevel} safety`}
             >
               <span
                 className="safety-dot"
@@ -399,4 +384,4 @@ export const DestinationCard = ({
       </div>
     </Card>
   );
-}; 
+};
