@@ -136,7 +136,7 @@ const Bangalore = () => {
           {/* Destinations Grid - Keep Original Cards */}
           <div className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 transform transition-all duration-1000 ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-20 opacity-0'}`} style={{ transitionDelay: '1200ms' }}>
             {bangaloreDestinations.map((destination, index) => (
-              <div key={index} className="animate-scale-in" style={{ animationDelay: `${1400 + index * 100}ms` }}>
+              <div key={index}>
                 <DestinationCard {...destination} />
               </div>
             ))}
