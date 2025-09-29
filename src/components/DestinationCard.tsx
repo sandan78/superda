@@ -333,7 +333,6 @@ export const DestinationCard = ({
           border: 1px solid rgba(255, 255, 255, 0.1);
           background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
           color: white;
-          cursor: pointer;
         }
 
         .action-btn::before {
@@ -355,22 +354,10 @@ export const DestinationCard = ({
           transform: translateY(-2px);
           border-color: rgba(255, 255, 255, 0.3);
           box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-          background: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.08) 100%);
         }
 
         .action-btn:active {
           transform: translateY(0);
-        }
-
-        /* Prevent card hover effects when hovering over buttons */
-        .destination-actions:hover ~ *,
-        .destination-actions:hover ~ .destination-main,
-        .destination-actions:hover ~ .destination-footer .destination-meta-grid {
-          pointer-events: none;
-        }
-
-        .destination-actions * {
-          pointer-events: auto;
         }
       `}</style>
 
@@ -411,10 +398,7 @@ export const DestinationCard = ({
             )}
           </div>
 
-          <div 
-            className="destination-actions"
-            onMouseEnter={() => setIsHovered(false)}
-          >
+          <div className="destination-actions">
             <Button
               className="action-btn"
               onClick={() => {
@@ -462,4 +446,4 @@ export const DestinationCard = ({
       </div>
     </Card>
   );
-};
+}; 
