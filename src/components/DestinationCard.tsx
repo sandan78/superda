@@ -123,6 +123,12 @@ export const DestinationCard = ({
     low: <Shield className="w-3 h-3" />
   };
 
+  const priceIcons = {
+    "$": "💰",
+    "$$": "💰💰",
+    "$$$": "💰💰💰"
+  };
+
   const handleImageError = (
     e: React.SyntheticEvent<HTMLImageElement, Event>
   ) => {
@@ -444,4 +450,116 @@ export const DestinationCard = ({
         /* Floating elements animation */
         @keyframes float {
           0%, 100% { transform: translateY(0px); }
-          50% { transform: translateY(-5
+          50% { transform: translateY(-5px); }
+        }
+
+        .floating {
+          animation: float 3s ease-in-out infinite;
+        }
+      `}</style>
+
+      {/* Image Section with Enhanced Effects */}
+      <div className="destination-img-container">
+        {!imageLoaded && <div className="image-shimmer" />}
+        <img
+          src={image || "/placeholder.svg"}
+          alt={`${name}, ${country}`}
+          className="destination-img"
+          onError={handleImageError}
+          onLoad={() => setImageLoaded(true)}
+        />
+        <div className="image-overlay" />
+        <div className="match-badge floating">
+          <Heart className="w-4 h-4" />
+          {matchPercentage}% Match
+        </div>
+      </div>
+
+      {/* Content Section */}
+      <div className="destination-content-wrapper">
+        <div className="destination-main">
+          <h2 className="destination-title">{name}</h2>
+          <div className="destination-location">
+            <MapPin className="w-4 h-4 meta-icon" />
+            <span>{country}</span>
+          </div>
+          <p className="destination-description">{description}</p>
+        </div>
+
+        <div className="destination-footer">
+          <div className="destination-meta-grid">
+            <div className="meta-item">
+              <Clock className="w-4 h-4 meta-icon" />
+              <span>{bestTime}</span>
+            </div>
+            <div className="meta-item">
+              <span>{priceIcons[priceRange]}</span>
+              <span>{priceRange}</span>
+            </div>
+            {idealGroupSize && (
+              <div className="meta-item">
+                <Users className="w-4 h-4 meta-icon" />
+                <span>{idealGroupSize}</span>
+              </div>
+            )}
+            <div className="safety-indicator">
+              <span
+                className="safety-dot"
+                style={{ backgroundColor: safetyColor[safetyLevel] }}
+              />
+              {safetyIcon[safetyLevel]}
+              <span style={{ color: safetyColor[safetyLevel] }}>
+                {safetyLevel.charAt(0).toUpperCase() + safetyLevel.slice(1)}
+              </span>
+            </div>
+          </div>
+
+          <div className="destination-actions">
+            <Button
+              className="action-btn"
+              onClick={() => {
+                navigate(
+                  `/destination/${encodeURIComponent(
+                    country
+                  )}/${encodeURIComponent(name)}`
+                );
+                setTimeout(() => {
+                  window.scrollTo({ top: 0, behavior: "smooth" });
+                }, 100);
+              }}
+            >
+              Explore
+            </Button>
+
+            {!hideGetGoingPlans && (
+              <Button 
+                className="action-btn primary-btn" 
+                onClick={handleGetGoingPlans}
+              >
+                Get Going
+              </Button>
+            )}
+
+            <Button
+              className="action-btn"
+              onClick={handleAddToPlan}
+              disabled={isSelected}
+            >
+              {isSelected ? (
+                <>
+                  <Check className="w-4 h-4 mr-2" />
+                  Added
+                </>
+              ) : (
+                <>
+                  <Plus className="w-4 h-4 mr-2" />
+                  Add Plan
+                </>
+              )}
+            </Button>
+          </div>
+        </div>
+      </div>
+    </Card>
+  );
+};  
