@@ -1,36 +1,6 @@
-Of course. My apologies for the error in the previous version. The build error you encountered is a subtle but common issue when mixing dynamic JavaScript expressions directly inside a `<style>` tag within JSX.
-
-The error `Cannot read properties of undefined (reading 'indexOf')` from `vite:react-swc` happens because the build tool tries to parse the content of the `<style>` tag as plain CSS, but it encounters the JavaScript expression `opacity: ${imageLoaded ? 1 : 0};` and doesn't know how to handle it.
-
-The correct way to apply dynamic styles in React is to use the inline `style` prop on the element itself.
-
-I have fixed this issue and also implemented your original request to remove the price emojis and the "high/medium/low" text.
-
-Here is the corrected, error-free code:
-
-### Summary of Changes:
-1.  **Build Error Fix:** Moved the dynamic `opacity` from the `<style>` block to an inline `style` prop on the `<img>` tag. This resolves the Vite build error.
-2.  **Price Display:** Removed the `priceIcons` emoji map and replaced the emoji with a `DollarSign` icon from `lucide-react` for a cleaner look.
-3.  **Safety Indicator:** Removed the "High", "Medium", "Low" text, leaving just the colored dot and the shield icon.
-4.  **Import Statement:** Updated the `lucide-react` import to include `DollarSign`.
-
----
-
-### Corrected Code
-
-```tsx
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import {
-  MapPin,
-  Clock,
-  Heart,
-  Plus,
-  Check,
-  Users,
-  Shield,
-  DollarSign, // Added DollarSign icon
-} from "lucide-react";
+import { MapPin, Clock, Heart, Plus, Check } from "lucide-react";
 import { usePlans } from "@/contexts/PlanContext";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
@@ -141,18 +111,6 @@ export const DestinationCard = ({
     navigate("/dashboard?tab=ongoing");
   };
 
-  const safetyColor = {
-    high: "#10b981",
-    medium: "#f59e0b",
-    low: "#ef4444",
-  };
-
-  const safetyIcon = {
-    high: <Shield className="w-3 h-3" />,
-    medium: <Shield className="w-3 h-3" />,
-    low: <Shield className="w-3 h-3" />,
-  };
-
   const handleImageError = (
     e: React.SyntheticEvent<HTMLImageElement, Event>
   ) => {
@@ -162,9 +120,7 @@ export const DestinationCard = ({
 
   return (
     <Card
-      className={`destination-card-elite h-full overflow-hidden cursor-pointer transform-gpu ${
-        isHovered ? "is-hovered" : ""
-      }`}
+      className={`destination-card-elite h-full overflow-hidden cursor-pointer transform-gpu ${isHovered ? 'is-hovered' : ''}`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
@@ -190,6 +146,8 @@ export const DestinationCard = ({
             0 1px 3px rgba(0, 0, 0, 0.04),
             inset 0 1px 0 rgba(255, 255, 255, 0.1);
         }
+
+        /* Enhanced hover effects */
         .destination-card-elite:hover {
           transform: translateY(-12px) scale(1.02);
           box-shadow: 
@@ -199,6 +157,8 @@ export const DestinationCard = ({
             inset 0 1px 0 rgba(255, 255, 255, 0.15);
           border-color: rgba(255, 255, 255, 0.3);
         }
+
+        /* Image container with parallax effect */
         .destination-img-container {
           position: relative;
           height: 240px;
@@ -209,6 +169,7 @@ export const DestinationCard = ({
           z-index: 1;
           transform-style: preserve-3d;
         }
+
         .destination-img {
           width: 100%;
           height: 100%;
@@ -216,11 +177,15 @@ export const DestinationCard = ({
           display: block;
           transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
           transform: scale(1);
+          opacity: ${imageLoaded ? 1 : 0};
         }
+
         .destination-card-elite:hover .destination-img {
           transform: scale(1.08);
           filter: brightness(1.1) contrast(1.05);
         }
+
+        /* Loading shimmer for image */
         .image-shimmer {
           position: absolute;
           top: 0;
@@ -235,10 +200,13 @@ export const DestinationCard = ({
           );
           animation: shimmer 2s infinite;
         }
+
         @keyframes shimmer {
           0% { transform: translateX(-100%); }
           100% { transform: translateX(400%); }
         }
+
+        /* Gradient overlay */
         .image-overlay {
           position: absolute;
           bottom: 0;
@@ -249,6 +217,8 @@ export const DestinationCard = ({
           z-index: 2;
           pointer-events: none;
         }
+
+        /* Enhanced match badge */
         .match-badge {
           position: absolute;
           top: 16px;
@@ -269,10 +239,13 @@ export const DestinationCard = ({
           border: 1px solid rgba(255, 255, 255, 0.2);
           transition: all 0.3s ease;
         }
+
         .destination-card-elite:hover .match-badge {
           transform: scale(1.05) translateY(-2px);
           box-shadow: 0 12px 25px rgba(102, 126, 234, 0.4);
         }
+
+        /* Content section */
         .destination-content-wrapper {
           padding: 24px;
           display: flex;
@@ -283,6 +256,8 @@ export const DestinationCard = ({
           z-index: 2;
           background: transparent;
         }
+
+        /* Title with gradient text */
         .destination-title {
           font-size: 1.5rem;
           font-weight: 700;
@@ -295,12 +270,15 @@ export const DestinationCard = ({
           line-height: 1.2;
           transition: all 0.3s ease;
         }
+
         .destination-card-elite:hover .destination-title {
           background: linear-gradient(135deg, #ffffff 0%, #c7d2fe 100%);
           -webkit-background-clip: text;
           -webkit-text-fill-color: transparent;
           background-clip: text;
         }
+
+        /* Location with smooth animation */
         .destination-location {
           display: inline-flex;
           align-items: center;
@@ -311,10 +289,13 @@ export const DestinationCard = ({
           margin-bottom: 16px;
           transition: all 0.3s ease;
         }
+
         .destination-card-elite:hover .destination-location {
           color: #e5e7eb;
           transform: translateX(2px);
         }
+
+        /* Description with elegant typography */
         .destination-description {
           font-size: 0.95rem;
           line-height: 1.6;
@@ -327,12 +308,15 @@ export const DestinationCard = ({
           overflow: hidden;
           transition: all 0.3s ease;
         }
+
+        /* Enhanced info grid */
         .destination-meta-grid {
           display: grid;
-          grid-template-columns: 1fr 1fr;
+          grid-template-columns: 1fr;
           gap: 12px;
           margin-bottom: 20px;
         }
+
         .meta-item {
           display: flex;
           align-items: center;
@@ -341,49 +325,28 @@ export const DestinationCard = ({
           color: #9ca3af;
           transition: all 0.3s ease;
         }
+
         .destination-card-elite:hover .meta-item {
           color: #d1d5db;
         }
+
         .meta-icon {
           opacity: 0.7;
           transition: all 0.3s ease;
         }
+
         .destination-card-elite:hover .meta-icon {
           opacity: 1;
           transform: scale(1.1);
         }
-        .safety-indicator {
-          display: flex;
-          align-items: center;
-          gap: 6px;
-          font-size: 0.85rem;
-          font-weight: 600;
-          padding: 6px 12px;
-          border-radius: 12px;
-          background: rgba(255, 255, 255, 0.1);
-          backdrop-filter: blur(10px);
-          transition: all 0.3s ease;
-        }
-        .destination-card-elite:hover .safety-indicator {
-          background: rgba(255, 255, 255, 0.15);
-          transform: translateY(-1px);
-        }
-        .safety-dot {
-          width: 8px;
-          height: 8px;
-          border-radius: 50%;
-          display: inline-block;
-          animation: pulse 2s infinite;
-        }
-        @keyframes pulse {
-          0%, 100% { opacity: 1; }
-          50% { opacity: 0.7; }
-        }
+
+        /* Enhanced buttons */
         .destination-actions {
           display: flex;
           gap: 12px;
           margin-top: auto;
         }
+
         .action-btn {
           flex: 1;
           border-radius: 14px;
@@ -398,6 +361,7 @@ export const DestinationCard = ({
           background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
           color: white;
         }
+
         .action-btn::before {
           content: '';
           position: absolute;
@@ -408,29 +372,37 @@ export const DestinationCard = ({
           background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
           transition: left 0.6s;
         }
+
         .action-btn:hover::before {
           left: 100%;
         }
+
         .action-btn:hover {
           transform: translateY(-2px);
           border-color: rgba(255, 255, 255, 0.3);
           box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
         }
+
         .action-btn:active {
           transform: translateY(0);
         }
+
         .primary-btn {
           background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
           border: none;
         }
+
         .primary-btn:hover {
           background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
           box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
         }
+
+        /* Floating elements animation */
         @keyframes float {
           0%, 100% { transform: translateY(0px); }
           50% { transform: translateY(-5px); }
         }
+
         .floating {
           animation: float 3s ease-in-out infinite;
         }
@@ -443,8 +415,6 @@ export const DestinationCard = ({
           src={image || "/placeholder.svg"}
           alt={`${name}, ${country}`}
           className="destination-img"
-          // FIXED: Apply dynamic style here instead of in the <style> block
-          style={{ opacity: imageLoaded ? 1 : 0 }}
           onError={handleImageError}
           onLoad={() => setImageLoaded(true)}
         />
@@ -472,25 +442,11 @@ export const DestinationCard = ({
               <Clock className="w-4 h-4 meta-icon" />
               <span>{bestTime}</span>
             </div>
-            {/* UPDATED: Price display */}
-            <div className="meta-item">
-              <DollarSign className="w-4 h-4 meta-icon" />
-              <span>{priceRange}</span>
-            </div>
             {idealGroupSize && (
               <div className="meta-item">
-                <Users className="w-4 h-4 meta-icon" />
                 <span>{idealGroupSize}</span>
               </div>
             )}
-            {/* UPDATED: Safety indicator */}
-            <div className="safety-indicator" title={`Safety Level: ${safetyLevel}`}>
-              <span
-                className="safety-dot"
-                style={{ backgroundColor: safetyColor[safetyLevel] }}
-              />
-              {safetyIcon[safetyLevel]}
-            </div>
           </div>
 
           <div className="destination-actions">
@@ -511,8 +467,8 @@ export const DestinationCard = ({
             </Button>
 
             {!hideGetGoingPlans && (
-              <Button
-                className="action-btn primary-btn"
+              <Button 
+                className="action-btn primary-btn" 
                 onClick={handleGetGoingPlans}
               >
                 Get Going
@@ -541,5 +497,4 @@ export const DestinationCard = ({
       </div>
     </Card>
   );
-};
-```
+}; 
