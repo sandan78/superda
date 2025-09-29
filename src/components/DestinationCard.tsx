@@ -1,6 +1,6 @@
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { MapPin, Clock, Heart, Plus, Check, Users, Shield } from "lucide-react";
+import { MapPin, Clock, Heart, Plus, Check, Star, Users, Shield } from "lucide-react";
 import { usePlans } from "@/contexts/PlanContext";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
@@ -165,7 +165,7 @@ export const DestinationCard = ({
             inset 0 1px 0 rgba(255, 255, 255, 0.1);
         }
 
-        /* Hover effects */
+        /* Enhanced hover effects */
         .destination-card-elite:hover {
           transform: translateY(-12px) scale(1.02);
           box-shadow: 
@@ -176,7 +176,7 @@ export const DestinationCard = ({
           border-color: rgba(255, 255, 255, 0.3);
         }
 
-        /* Image */
+        /* Image container with parallax effect */
         .destination-img-container {
           position: relative;
           height: 240px;
@@ -203,7 +203,7 @@ export const DestinationCard = ({
           filter: brightness(1.1) contrast(1.05);
         }
 
-        /* Shimmer */
+        /* Loading shimmer for image */
         .image-shimmer {
           position: absolute;
           top: 0;
@@ -224,7 +224,7 @@ export const DestinationCard = ({
           100% { transform: translateX(400%); }
         }
 
-        /* Overlay */
+        /* Gradient overlay */
         .image-overlay {
           position: absolute;
           bottom: 0;
@@ -236,7 +236,7 @@ export const DestinationCard = ({
           pointer-events: none;
         }
 
-        /* Badge */
+        /* Enhanced match badge */
         .match-badge {
           position: absolute;
           top: 16px;
@@ -263,7 +263,7 @@ export const DestinationCard = ({
           box-shadow: 0 12px 25px rgba(102, 126, 234, 0.4);
         }
 
-        /* Content */
+        /* Content section */
         .destination-content-wrapper {
           padding: 24px;
           display: flex;
@@ -275,7 +275,7 @@ export const DestinationCard = ({
           background: transparent;
         }
 
-        /* Title */
+        /* Title with gradient text */
         .destination-title {
           font-size: 1.5rem;
           font-weight: 700;
@@ -293,9 +293,10 @@ export const DestinationCard = ({
           background: linear-gradient(135deg, #ffffff 0%, #c7d2fe 100%);
           -webkit-background-clip: text;
           -webkit-text-fill-color: transparent;
+          background-clip: text;
         }
 
-        /* Location */
+        /* Location with smooth animation */
         .destination-location {
           display: inline-flex;
           align-items: center;
@@ -312,7 +313,7 @@ export const DestinationCard = ({
           transform: translateX(2px);
         }
 
-        /* Description */
+        /* Description with elegant typography */
         .destination-description {
           font-size: 0.95rem;
           line-height: 1.6;
@@ -326,7 +327,7 @@ export const DestinationCard = ({
           transition: all 0.3s ease;
         }
 
-        /* Meta grid */
+        /* Enhanced info grid */
         .destination-meta-grid {
           display: grid;
           grid-template-columns: 1fr 1fr;
@@ -337,10 +338,9 @@ export const DestinationCard = ({
         .meta-item {
           display: flex;
           align-items: center;
-          gap: 6px;
+          gap: 8px;
           font-size: 0.85rem;
           color: #9ca3af;
-          line-height: 1.4;
           transition: all 0.3s ease;
         }
 
@@ -349,31 +349,31 @@ export const DestinationCard = ({
         }
 
         .meta-icon {
-          flex-shrink: 0;
-          opacity: 0.8;
+          opacity: 0.7;
           transition: all 0.3s ease;
         }
 
         .destination-card-elite:hover .meta-icon {
           opacity: 1;
-          transform: scale(1.05);
+          transform: scale(1.1);
         }
 
-        /* Safety */
+        /* Safety indicator with pulse animation */
         .safety-indicator {
           display: flex;
           align-items: center;
           gap: 6px;
           font-size: 0.85rem;
+          font-weight: 600;
           padding: 6px 12px;
           border-radius: 12px;
-          background: rgba(255, 255, 255, 0.08);
+          background: rgba(255, 255, 255, 0.1);
           backdrop-filter: blur(10px);
           transition: all 0.3s ease;
         }
 
         .destination-card-elite:hover .safety-indicator {
-          background: rgba(255, 255, 255, 0.12);
+          background: rgba(255, 255, 255, 0.15);
           transform: translateY(-1px);
         }
 
@@ -382,16 +382,15 @@ export const DestinationCard = ({
           height: 8px;
           border-radius: 50%;
           display: inline-block;
-          flex-shrink: 0;
           animation: pulse 2s infinite;
         }
 
         @keyframes pulse {
           0%, 100% { opacity: 1; }
-          50% { opacity: 0.6; }
+          50% { opacity: 0.7; }
         }
 
-        /* Actions */
+        /* Enhanced buttons */
         .destination-actions {
           display: flex;
           gap: 12px;
@@ -448,7 +447,7 @@ export const DestinationCard = ({
           box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
         }
 
-        /* Float */
+        /* Floating elements animation */
         @keyframes float {
           0%, 100% { transform: translateY(0px); }
           50% { transform: translateY(-5px); }
@@ -459,7 +458,7 @@ export const DestinationCard = ({
         }
       `}</style>
 
-      {/* Image Section */}
+      {/* Image Section with Enhanced Effects */}
       <div className="destination-img-container">
         {!imageLoaded && <div className="image-shimmer" />}
         <img
@@ -493,26 +492,25 @@ export const DestinationCard = ({
               <Clock className="w-4 h-4 meta-icon" />
               <span>{bestTime}</span>
             </div>
-
             <div className="meta-item">
-              <span className="meta-icon">{priceIcons[priceRange]}</span>
+              <span>{priceIcons[priceRange]}</span>
               <span>{priceRange}</span>
             </div>
-
             {idealGroupSize && (
               <div className="meta-item">
                 <Users className="w-4 h-4 meta-icon" />
                 <span>{idealGroupSize}</span>
               </div>
             )}
-
             <div className="safety-indicator">
               <span
                 className="safety-dot"
                 style={{ backgroundColor: safetyColor[safetyLevel] }}
               />
               {safetyIcon[safetyLevel]}
-              {/* Removed text like High/Medium/Low */}
+              <span style={{ color: safetyColor[safetyLevel] }}>
+                {safetyLevel.charAt(0).toUpperCase() + safetyLevel.slice(1)}
+              </span>
             </div>
           </div>
 
@@ -544,3 +542,24 @@ export const DestinationCard = ({
 
             <Button
               className="action-btn"
+              onClick={handleAddToPlan}
+              disabled={isSelected}
+            >
+              {isSelected ? (
+                <>
+                  <Check className="w-4 h-4 mr-2" />
+                  Added
+                </>
+              ) : (
+                <>
+                  <Plus className="w-4 h-4 mr-2" />
+                  Add Plan
+                </>
+              )}
+            </Button>
+          </div>
+        </div>
+      </div>
+    </Card>
+  );
+};  
