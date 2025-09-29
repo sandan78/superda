@@ -387,16 +387,6 @@ export const DestinationCard = ({
           transform: translateY(0);
         }
 
-        .primary-btn {
-          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-          border: none;
-        }
-
-        .primary-btn:hover {
-          background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
-          box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
-        }
-
         /* Floating elements animation */
         @keyframes float {
           0%, 100% { transform: translateY(0px); }
@@ -468,7 +458,7 @@ export const DestinationCard = ({
 
             {!hideGetGoingPlans && (
               <Button 
-                className="action-btn primary-btn" 
+                className="action-btn" 
                 onClick={handleGetGoingPlans}
               >
                 Get Going
@@ -497,4 +487,4 @@ export const DestinationCard = ({
       </div>
     </Card>
   );
-};  
+};
