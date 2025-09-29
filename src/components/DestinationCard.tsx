@@ -1,6 +1,6 @@
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { MapPin, Clock, Heart, Plus, Check } from "lucide-react";
+import { MapPin, Clock, Heart, Plus, Check, Star, Users, Shield } from "lucide-react";
 import { usePlans } from "@/contexts/PlanContext";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
@@ -109,6 +109,24 @@ export const DestinationCard = ({
     }
     updatePlanStatus(existing.id, "ongoing");
     navigate("/dashboard?tab=ongoing");
+  };
+
+  const safetyColor = {
+    high: "#10b981",
+    medium: "#f59e0b",
+    low: "#ef4444",
+  };
+
+  const safetyIcon = {
+    high: <Shield className="w-3 h-3" />,
+    medium: <Shield className="w-3 h-3" />,
+    low: <Shield className="w-3 h-3" />
+  };
+
+  const priceIcons = {
+    "$": "💰",
+    "$$": "💰💰",
+    "$$$": "💰💰💰"
   };
 
   const handleImageError = (
@@ -340,6 +358,38 @@ export const DestinationCard = ({
           transform: scale(1.1);
         }
 
+        /* Safety indicator with pulse animation */
+        .safety-indicator {
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          font-size: 0.85rem;
+          font-weight: 600;
+          padding: 6px 12px;
+          border-radius: 12px;
+          background: rgba(255, 255, 255, 0.1);
+          backdrop-filter: blur(10px);
+          transition: all 0.3s ease;
+        }
+
+        .destination-card-elite:hover .safety-indicator {
+          background: rgba(255, 255, 255, 0.15);
+          transform: translateY(-1px);
+        }
+
+        .safety-dot {
+          width: 8px;
+          height: 8px;
+          border-radius: 50%;
+          display: inline-block;
+          animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0.7; }
+        }
+
         /* Enhanced buttons */
         .destination-actions {
           display: flex;
@@ -443,13 +493,25 @@ export const DestinationCard = ({
               <span>{bestTime}</span>
             </div>
             <div className="meta-item">
-              <span>Price: {priceRange.replace(/\$/g, '')}</span>
+              <span>{priceIcons[priceRange]}</span>
+              <span>{priceRange}</span>
             </div>
             {idealGroupSize && (
               <div className="meta-item">
+                <Users className="w-4 h-4 meta-icon" />
                 <span>{idealGroupSize}</span>
               </div>
             )}
+            <div className="safety-indicator">
+              <span
+                className="safety-dot"
+                style={{ backgroundColor: safetyColor[safetyLevel] }}
+              />
+              {safetyIcon[safetyLevel]}
+              <span style={{ color: safetyColor[safetyLevel] }}>
+                {safetyLevel.charAt(0).toUpperCase() + safetyLevel.slice(1)}
+              </span>
+            </div>
           </div>
 
           <div className="destination-actions">
@@ -500,4 +562,4 @@ export const DestinationCard = ({
       </div>
     </Card>
   );
-};
+};   
