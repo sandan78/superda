@@ -1,6 +1,23 @@
+Of course! I've updated your `DestinationCard` component to remove the price-range emojis and the "high", "medium", "low" safety level text.
+
+To maintain visual consistency with the other metadata items, I've replaced the price emoji with a `DollarSign` icon from `lucide-react`. The safety indicator now consists of just the colored dot and the shield icon.
+
+Here is the refactored code:
+
+```tsx
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { MapPin, Clock, Heart, Plus, Check, Star, Users, Shield } from "lucide-react";
+import {
+  MapPin,
+  Clock,
+  Heart,
+  Plus,
+  Check,
+  Star,
+  Users,
+  Shield,
+  DollarSign, // Added DollarSign icon
+} from "lucide-react";
 import { usePlans } from "@/contexts/PlanContext";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
@@ -120,14 +137,10 @@ export const DestinationCard = ({
   const safetyIcon = {
     high: <Shield className="w-3 h-3" />,
     medium: <Shield className="w-3 h-3" />,
-    low: <Shield className="w-3 h-3" />
+    low: <Shield className="w-3 h-3" />,
   };
 
-  const priceIcons = {
-    "$": "💰",
-    "$$": "💰💰",
-    "$$$": "💰💰💰"
-  };
+  // Removed the priceIcons emoji map
 
   const handleImageError = (
     e: React.SyntheticEvent<HTMLImageElement, Event>
@@ -138,7 +151,9 @@ export const DestinationCard = ({
 
   return (
     <Card
-      className={`destination-card-elite h-full overflow-hidden cursor-pointer transform-gpu ${isHovered ? 'is-hovered' : ''}`}
+      className={`destination-card-elite h-full overflow-hidden cursor-pointer transform-gpu ${
+        isHovered ? "is-hovered" : ""
+      }`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
@@ -492,8 +507,9 @@ export const DestinationCard = ({
               <Clock className="w-4 h-4 meta-icon" />
               <span>{bestTime}</span>
             </div>
+            {/* MODIFIED: Replaced emoji with DollarSign icon */}
             <div className="meta-item">
-              <span>{priceIcons[priceRange]}</span>
+              <DollarSign className="w-4 h-4 meta-icon" />
               <span>{priceRange}</span>
             </div>
             {idealGroupSize && (
@@ -502,15 +518,13 @@ export const DestinationCard = ({
                 <span>{idealGroupSize}</span>
               </div>
             )}
+            {/* MODIFIED: Removed "high/medium/low" text */}
             <div className="safety-indicator">
               <span
                 className="safety-dot"
                 style={{ backgroundColor: safetyColor[safetyLevel] }}
               />
               {safetyIcon[safetyLevel]}
-              <span style={{ color: safetyColor[safetyLevel] }}>
-                {safetyLevel.charAt(0).toUpperCase() + safetyLevel.slice(1)}
-              </span>
             </div>
           </div>
 
@@ -532,8 +546,8 @@ export const DestinationCard = ({
             </Button>
 
             {!hideGetGoingPlans && (
-              <Button 
-                className="action-btn primary-btn" 
+              <Button
+                className="action-btn primary-btn"
                 onClick={handleGetGoingPlans}
               >
                 Get Going
@@ -562,4 +576,5 @@ export const DestinationCard = ({
       </div>
     </Card>
   );
-};   
+};
+```
