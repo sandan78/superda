@@ -1,6 +1,6 @@
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { MapPin, Clock, Heart, Plus, Check } from "lucide-react";
+import { MapPin, Clock, Plus, Check } from "lucide-react";
 import { usePlans } from "@/contexts/PlanContext";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
@@ -218,33 +218,6 @@ export const DestinationCard = ({
           pointer-events: none;
         }
 
-        /* Enhanced match badge */
-        .match-badge {
-          position: absolute;
-          top: 16px;
-          right: 16px;
-          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-          color: white;
-          font-weight: 700;
-          border-radius: 20px;
-          padding: 8px 16px;
-          font-size: 0.8rem;
-          line-height: 1;
-          display: inline-flex;
-          align-items: center;
-          gap: 6px;
-          box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
-          z-index: 3;
-          backdrop-filter: blur(10px);
-          border: 1px solid rgba(255, 255, 255, 0.2);
-          transition: all 0.3s ease;
-        }
-
-        .destination-card-elite:hover .match-badge {
-          transform: scale(1.05) translateY(-2px);
-          box-shadow: 0 12px 25px rgba(102, 126, 234, 0.4);
-        }
-
         /* Content section */
         .destination-content-wrapper {
           padding: 24px;
@@ -386,16 +359,6 @@ export const DestinationCard = ({
         .action-btn:active {
           transform: translateY(0);
         }
-
-        /* Floating elements animation */
-        @keyframes float {
-          0%, 100% { transform: translateY(0px); }
-          50% { transform: translateY(-5px); }
-        }
-
-        .floating {
-          animation: float 3s ease-in-out infinite;
-        }
       `}</style>
 
       {/* Image Section with Enhanced Effects */}
@@ -409,10 +372,6 @@ export const DestinationCard = ({
           onLoad={() => setImageLoaded(true)}
         />
         <div className="image-overlay" />
-        <div className="match-badge floating">
-          <Heart className="w-4 h-4" />
-          {matchPercentage}% Match
-        </div>
       </div>
 
       {/* Content Section */}
