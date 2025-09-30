@@ -4,7 +4,7 @@ import { ParticleBackground } from "@/components/ParticleBackground";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { MapPin, Clock, Heart, Users, Shield, BedDouble, Camera, Utensils, Activity, Navigation, Lightbulb, CheckCircle, Circle, ArrowRight, Star, Calendar, DollarSign, Info, Sparkles, TrendingUp, Map, Thermometer, MessageCircle, CreditCard, Timer } from "lucide-react";
+import { MapPin, Clock, Heart, Users, Shield, BedDouble, Camera, Utensils, Activity, Navigation, Lightbulb, CircleCheck as CheckCircle, Circle, ArrowRight, Star, Calendar, DollarSign, Info, Sparkles, TrendingUp, Map, Thermometer, MessageCircle, CreditCard, Timer } from "lucide-react";
 import { usePlans } from "@/contexts/PlanContext";
 import { useToast } from "@/hooks/use-toast";
 import { bangaloreDestinations, keralaDestinations, tamilNaduDestinations, type Destination } from "@/data/destinations";
@@ -146,12 +146,18 @@ const DestinationDetail = () => {
 
   const getStepProgress = () => {
     if (!currentPlan) return 0;
-    return Math.round((currentPlan.currentStep / 6) * 100);
+    if (currentPlan.status === 'selected') return 0;
+    if (currentPlan.status === 'ongoing') return 50;
+    if (currentPlan.status === 'completed') return 100;
+    return 0;
   };
 
   const getCurrentStepIndex = () => {
     if (!currentPlan) return -1;
-    return currentPlan.currentStep;
+    if (currentPlan.status === 'selected') return 0;
+    if (currentPlan.status === 'ongoing') return 4;
+    if (currentPlan.status === 'completed') return 6;
+    return -1;
   };
 
   const handleAdd = () => {
@@ -177,16 +183,14 @@ const DestinationDetail = () => {
 
   const handleStartJourney = () => {
     if (currentPlan) {
-      if (currentPlan.currentStep === 0) {
-        updatePlanStep(currentPlan.id, 1);
-        toast({ title: "Journey started!", description: `Step 1: Research & Planning phase for ${destination.name} has begun.` });
-      }
+      updatePlanStatus(currentPlan.id, 'ongoing');
+      toast({ title: "Journey started!", description: `Your journey to ${destination.name} is now ongoing.` });
     }
   };
 
   const handleCompleteJourney = () => {
     if (currentPlan) {
-      updatePlanStep(currentPlan.id, 6);
+      updatePlanStatus(currentPlan.id, 'completed');
       toast({ title: "Journey completed!", description: `Congratulations on completing your journey to ${destination.name}!` });
     }
   };
@@ -327,7 +331,7 @@ const DestinationDetail = () => {
                   <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                     {travelSteps.map((step, index) => {
                       const currentStepIndex = getCurrentStepIndex();
-                      const isCompleted = index < currentStepIndex;
+                      const isCompleted = currentPlan.status === 'completed' || index < currentStepIndex;
                       const isCurrent = index === currentStepIndex;
                       const isUpcoming = index > currentStepIndex;
                       const Icon = step.icon;
@@ -347,7 +351,7 @@ const DestinationDetail = () => {
                             isCurrent ? 'bg-amber-500 text-white animate-pulse' :
                             'bg-gray-300 text-gray-600'
                           }`}>
-                            {isCompleted ? <CheckCircle className="w-4 h-4" /> : index + 1}
+                            {index + 1}
                           </div>
                           
                           {/* Step Content */}
@@ -376,24 +380,6 @@ const DestinationDetail = () => {
                                 </div>
                               ))}
                             </div>
-                            
-                            {/* Step Action Button */}
-                            {isCurrent && (
-                              <Button
-                                size="sm"
-                                onClick={() => {
-                                  advancePlanStep(currentPlan.id);
-                                  toast({ 
-                                    title: "Step completed!", 
-                                    description: `${step.title} completed. Moving to next step.` 
-                                  });
-                                }}
-                                className="w-full mt-4 bg-amber-600 hover:bg-amber-700 text-white"
-                              >
-                                Complete This Step
-                                <ArrowRight className="w-4 h-4 ml-2" />
-                              </Button>
-                            )}
                           </div>
                         </div>
                       );
@@ -405,24 +391,14 @@ const DestinationDetail = () => {
                     {currentPlan.status === 'selected' && (
                       <Button onClick={handleStartJourney} className="px-8 py-3 text-lg">
                         <Navigation className="w-5 h-5 mr-2" />
-                        Begin Step 1: Research & Planning
+                        Start Journey
                       </Button>
                     )}
-                    {currentPlan.status === 'ongoing' && currentPlan.currentStep === 5 && (
+                    {currentPlan.status === 'ongoing' && (
                       <Button onClick={handleCompleteJourney} className="px-8 py-3 text-lg bg-green-600 hover:bg-green-700">
                         <CheckCircle className="w-5 h-5 mr-2" />
-                        Complete Final Step
+                        Complete Journey
                       </Button>
-                    )}
-                    {currentPlan.status === 'ongoing' && currentPlan.currentStep < 5 && (
-                      <div className="text-center">
-                        <p className="text-sm text-muted-foreground mb-2">
-                          Complete current step to continue your journey
-                        </p>
-                        <Badge className="bg-amber-500/20 text-amber-600 border-amber-500/30">
-                          Step {currentPlan.currentStep + 1} in Progress
-                        </Badge>
-                      </div>
                     )}
                   </div>
                 </div>
