@@ -81,7 +81,7 @@ export const PlanProvider: React.FC<{ children: React.ReactNode }> = ({ children
         plan.id === id ? { 
           ...plan, 
           status,
-          currentStep: status === 'selected' ? 0 : status === 'ongoing' ? Math.max(plan.currentStep, 1) : 6
+          currentStep: status === 'selected' ? 0 : status === 'ongoing' ? 1 : 6
         } : plan
       )
     );

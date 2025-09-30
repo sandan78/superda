@@ -146,18 +146,12 @@ const DestinationDetail = () => {
 
   const getStepProgress = () => {
     if (!currentPlan) return 0;
-    if (currentPlan.status === 'selected') return 0;
-    if (currentPlan.status === 'ongoing') return 50;
-    if (currentPlan.status === 'completed') return 100;
-    return 0;
+    return Math.round((currentPlan.currentStep / 6) * 100);
   };
 
   const getCurrentStepIndex = () => {
     if (!currentPlan) return -1;
-    if (currentPlan.status === 'selected') return 0;
-    if (currentPlan.status === 'ongoing') return 4;
-    if (currentPlan.status === 'completed') return 6;
-    return -1;
+    return currentPlan.currentStep;
   };
 
   const handleAdd = () => {
@@ -331,9 +325,9 @@ const DestinationDetail = () => {
                   <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                     {travelSteps.map((step, index) => {
                       const currentStepIndex = getCurrentStepIndex();
-                      const isCompleted = currentPlan.status === 'completed' || index < currentStepIndex;
+                      const isCompleted = index < currentStepIndex || currentPlan.status === 'completed';
                       const isCurrent = index === currentStepIndex;
-                      const isUpcoming = index > currentStepIndex;
+                      const isUpcoming = index > currentStepIndex && currentPlan.status !== 'completed';
                       const Icon = step.icon;
                       
                       return (
@@ -594,7 +588,7 @@ const DestinationDetail = () => {
                   {!currentPlan ? (
                     <Button onClick={handleAdd} className="w-full py-3 text-lg">
                       <Heart className="w-5 h-5 mr-2" />
-                      Add to Travel Plans
+                      Begin Step 1: Research & Planning
                     </Button>
                   ) : (
                     <div className="space-y-4">
@@ -615,10 +609,27 @@ const DestinationDetail = () => {
                       </Button>
                     </div>
                   )}
+                  {currentPlan.status === 'completed' && (
+                    <div className="text-center p-6 bg-green-50 rounded-xl border border-green-200">
+                      <CheckCircle className="w-8 h-8 text-green-600 mx-auto mb-3" />
+                      <h3 className="text-xl font-bold text-green-800 mb-2">Journey Completed!</h3>
+                      <p className="text-green-700">Congratulations on completing your journey to {destination.name}!</p>
+                    </div>
+                  )}
                 </CardContent>
-              </Card>
-
-              {/* Travel Tips */}
+                    <Button 
+                      onClick={() => {
+                        advancePlanStep(currentPlan.id);
+                        toast({
+                          title: "Step completed!",
+                          description: `Moving to ${travelSteps[currentPlan.currentStep + 1]?.title || 'completion'}.`
+                        });
+                      }}
+                      className="px-8 py-3 text-lg bg-amber-600 hover:bg-amber-700"
+                      disabled={currentPlan.currentStep >= 6}
+                    >
+                      <ArrowRight className="w-5 h-5 mr-2" />
+                      Complete Current Step
               <Card>
                 <CardContent className="p-6">
                   <h3 className="text-xl font-bold mb-6 flex items-center gap-2">
