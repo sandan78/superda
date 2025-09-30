@@ -26,7 +26,7 @@ import {
 import { useSearchParams, useNavigate } from 'react-router-dom';
 
 const Dashboard = () => {
-  const { selectedPlans, updatePlanStatus, removePlan, getPlansByStatus } = usePlans();
+  const { selectedPlans, updatePlanStatus, removePlan, getPlansByStatus, advancePlanStep } = usePlans();
   const [searchParams, setSearchParams] = useSearchParams();
   const initialTab = (searchParams.get('tab') as "overview" | "selected" | "ongoing" | "completed") || "overview";
   const [activeTab, setActiveTab] = useState(initialTab);
@@ -66,12 +66,7 @@ const Dashboard = () => {
   ];
 
   const getStepProgress = (status: string) => {
-    switch (status) {
-      case 'selected': return 0;
-      case 'ongoing': return 50;
-      case 'completed': return 100;
-      default: return 0;
-    }
+    return 0; // This will be overridden by individual plan progress
   };
 
   const PlanCard = ({ plan }: { plan: any }) => (
@@ -101,10 +96,26 @@ const Dashboard = () => {
               <span className="text-sm font-semibold text-amber-800">Journey in Progress</span>
               <Target className="w-4 h-4 text-amber-600" />
             </div>
-            <Progress value={getStepProgress(plan.status)} className="mb-3" />
+            <Progress value={Math.round((plan.currentStep / 6) * 100)} className="mb-3" />
             <div className="text-xs text-amber-700">
-              <div className="font-medium mb-1">Current Phase: Explore & Experience</div>
-              <div>Visit attractions • Try local cuisine • Immerse in culture</div>
+              <div className="font-medium mb-1">
+                Current Phase: {getTravelSteps()[plan.currentStep]?.title || 'Unknown'}
+              </div>
+              <div>{getTravelSteps()[plan.currentStep]?.description || 'Continue your journey'}</div>
+              <Button
+                size="sm"
+                onClick={() => {
+                  advancePlanStep(plan.id);
+                  toast({
+                    title: "Step completed!",
+                    description: `Moving to next step in your ${plan.name} journey.`
+                  });
+                }}
+                className="mt-2 w-full bg-amber-600 hover:bg-amber-700 text-white"
+              >
+                Complete Current Step
+                <ArrowRight className="w-3 h-3 ml-1" />
+              </Button>
             </div>
           </div>
         )}
@@ -215,12 +226,12 @@ const Dashboard = () => {
               variant="secondary"
               className="flex-1"
               onClick={() => {
-                handleStatusChange(plan.id, 'ongoing');
+                updatePlanStatus(plan.id, 'ongoing');
                 navigate('/dashboard?tab=ongoing');
               }}
               aria-label="Start journey and move to ongoing"
             >
-              Start Journey
+              Begin Step 1
             </Button>
           )}
           {plan.status === 'ongoing' && (
@@ -228,11 +239,11 @@ const Dashboard = () => {
               variant="secondary"
               className="flex-1"
               onClick={() => {
-                handleStatusChange(plan.id, 'completed');
+                advancePlanStep(plan.id);
               }}
-              aria-label="Mark journey as completed"
+              aria-label="Complete current step"
             >
-              Complete
+              Next Step
             </Button>
           )}
         </div>
