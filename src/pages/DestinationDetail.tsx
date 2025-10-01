@@ -9,7 +9,7 @@ import { MapPin, Calendar, Users, Star, Clock, Camera, Utensils, Car, Plane, Hot
 import { destinations } from '@/data/destinations';
 import { usePlan } from '@/contexts/PlanContext';
 import { useToast } from '@/hooks/use-toast';
-import GoogleMapEmbed from '@/components/GoogleMapEmbed';
+import { GoogleMapEmbed } from '@/components/GoogleMapEmbed';
 
 const DestinationDetail = () => {
   const { id } = useParams<{ id: string }>();
