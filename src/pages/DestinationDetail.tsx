@@ -1,5 +1,5 @@
 import React from 'react';
-import { useParams, Navigate } from 'react-router-dom';
+import { useParams, Navigate, useLocation } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -12,24 +12,30 @@ import { useToast } from '@/hooks/use-toast';
 import { GoogleMapEmbed } from '@/components/GoogleMapEmbed';
 
 const DestinationDetail = () => {
-  const { id } = useParams<{ id: string }>();
-  const { plans, addPlan, updatePlan } = usePlans();
+  const { country, name } = useParams<{ country: string; name: string }>();
+  const location = useLocation();
+  const { selectedPlans, addPlan, advancePlanStep } = usePlans();
   const { toast } = useToast();
   
   const destinations = [...tamilNaduDestinations, ...keralaDestinations, ...bangaloreDestinations];
-  const destination = destinations.find(d => d.id === id);
+  const destination = location.state?.destination || destinations.find(d => 
+    d.name === decodeURIComponent(name || '') && d.country === decodeURIComponent(country || '')
+  );
   
   if (!destination) {
     return <Navigate to="/not-found" replace />;
   }
 
-  const existingPlan = plans.find(p => p.destinationId === destination.id);
+  const existingPlan = selectedPlans.find(p => 
+    p.destinationName === destination.name && p.destinationCountry === destination.country
+  );
   
   const handleStartJourney = () => {
     if (!existingPlan) {
       addPlan({
-        destinationId: destination.id,
         destinationName: destination.name,
+        destinationCountry: destination.country,
+        region: destination.country,
         status: 'ongoing',
         currentStep: 1,
         createdAt: new Date().toISOString(),
@@ -44,16 +50,9 @@ const DestinationDetail = () => {
 
   const handleCompleteStep = () => {
     if (existingPlan && existingPlan.currentStep < 6) {
+      advancePlanStep(existingPlan.id!);
+      
       const nextStep = existingPlan.currentStep + 1;
-      const newStatus = nextStep === 6 ? 'completed' : 'ongoing';
-      
-      updatePlan(existingPlan.id!, {
-        ...existingPlan,
-        currentStep: nextStep,
-        status: newStatus,
-        updatedAt: new Date().toISOString()
-      });
-      
       if (nextStep === 6) {
         toast({
           title: "Journey Completed! 🎊",
@@ -82,6 +81,21 @@ const DestinationDetail = () => {
   const getProgressPercentage = () => {
     if (!existingPlan) return 0;
     return Math.round((existingPlan.currentStep / 6) * 100);
+  };
+
+  const regionMapConfigs = {
+    'Tamil Nadu': {
+      embedUrl: `https://www.google.com/maps/embed/v1/place?key=YOUR_API_KEY&q=${encodeURIComponent(destination.name + ', Tamil Nadu, India')}`,
+      searchBounds: { lat: 11.1271, lng: 78.6569 }
+    },
+    'Kerala': {
+      embedUrl: `https://www.google.com/maps/embed/v1/place?key=YOUR_API_KEY&q=${encodeURIComponent(destination.name + ', Kerala, India')}`,
+      searchBounds: { lat: 10.8505, lng: 76.2711 }
+    },
+    'Karnataka': {
+      embedUrl: `https://www.google.com/maps/embed/v1/place?key=YOUR_API_KEY&q=${encodeURIComponent(destination.name + ', Karnataka, India')}`,
+      searchBounds: { lat: 15.3173, lng: 75.7139 }
+    }
   };
 
   const journeySteps = [
@@ -169,15 +183,11 @@ const DestinationDetail = () => {
             <div className="flex items-center gap-6 text-lg">
               <div className="flex items-center gap-2">
                 <MapPin className="w-5 h-5" />
-                <span>{destination.location}</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Star className="w-5 h-5 fill-yellow-400 text-yellow-400" />
-                <span>{destination.rating}</span>
+                <span>{destination.country}</span>
               </div>
               <div className="flex items-center gap-2">
                 <Clock className="w-5 h-5" />
-                <span>{destination.duration}</span>
+                <span>3-5 days</span>
               </div>
             </div>
           </div>
@@ -363,9 +373,9 @@ const DestinationDetail = () => {
                   </CardHeader>
                   <CardContent>
                     <div className="grid md:grid-cols-2 gap-4">
-                      {destination.attractions.map((attraction, index) => (
+                      {destination.touristPlaces.map((place, index) => (
                         <div key={index} className="p-4 bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl border border-purple-100">
-                          <h4 className="font-semibold text-purple-800 mb-2">{attraction}</h4>
+                          <h4 className="font-semibold text-purple-800 mb-2">{place.name}</h4>
                           <p className="text-sm text-purple-600">Must-visit destination</p>
                         </div>
                       ))}
@@ -384,7 +394,7 @@ const DestinationDetail = () => {
                   </CardHeader>
                   <CardContent>
                     <div className="grid md:grid-cols-2 gap-4">
-                      {destination.cuisine.map((dish, index) => (
+                      {destination.localCuisine.map((dish, index) => (
                         <div key={index} className="p-4 bg-gradient-to-r from-orange-50 to-red-50 rounded-xl border border-orange-100">
                           <h4 className="font-semibold text-orange-800 mb-2">{dish}</h4>
                           <p className="text-sm text-orange-600">Local specialty</p>
@@ -405,7 +415,7 @@ const DestinationDetail = () => {
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-4">
-                      {destination.tips.map((tip, index) => (
+                      {destination.travelTips.map((tip, index) => (
                         <div key={index} className="p-4 bg-gradient-to-r from-yellow-50 to-amber-50 rounded-xl border border-yellow-100">
                           <p className="text-yellow-800">{tip}</p>
                         </div>
@@ -468,7 +478,10 @@ const DestinationDetail = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <GoogleMapEmbed location={destination.name} />
+                <GoogleMapEmbed 
+                  location={destination.name} 
+                  embedUrl={regionMapConfigs[destination.country as keyof typeof regionMapConfigs]?.embedUrl}
+                />
               </CardContent>
             </Card>
 
@@ -479,19 +492,8 @@ const DestinationDetail = () => {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="flex justify-between items-center">
-                  <span className="text-gray-600">Rating</span>
-                  <div className="flex items-center gap-1">
-                    <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                    <span className="font-semibold">{destination.rating}</span>
-                  </div>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-gray-600">Duration</span>
-                  <span className="font-semibold">{destination.duration}</span>
-                </div>
-                <div className="flex justify-between items-center">
                   <span className="text-gray-600">Budget</span>
-                  <span className="font-semibold">{destination.budget}</span>
+                  <span className="font-semibold">{destination.priceRange}</span>
                 </div>
                 <div className="flex justify-between items-center">
                   <span className="text-gray-600">Best Time</span>
