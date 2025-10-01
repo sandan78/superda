@@ -5,7 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { MapPin, Calendar, Users, Star, Clock, Camera, Utensils, Car, Plane, Hotel, CheckCircle, Circle } from 'lucide-react';
+import { MapPin, Calendar, Users, Star, Clock, Camera, Utensils, Car, Plane, Hotel, CircleCheck as CheckCircle, Circle } from 'lucide-react';
 import { destinations } from '@/data/destinations';
 import { usePlan } from '@/contexts/PlanContext';
 import { useToast } from '@/hooks/use-toast';
