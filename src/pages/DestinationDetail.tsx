@@ -7,13 +7,13 @@ import { Progress } from '@/components/ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { MapPin, Calendar, Users, Star, Clock, Camera, Utensils, Car, Plane, Hotel, CircleCheck as CheckCircle, Circle } from 'lucide-react';
 import { tamilNaduDestinations, keralaDestinations, bangaloreDestinations } from '@/data/destinations';
-import { usePlan } from '@/contexts/PlanContext';
+import { usePlans } from '@/contexts/PlanContext';
 import { useToast } from '@/hooks/use-toast';
 import { GoogleMapEmbed } from '@/components/GoogleMapEmbed';
 
 const DestinationDetail = () => {
   const { id } = useParams<{ id: string }>();
-  const { plans, addPlan, updatePlan } = usePlan();
+  const { plans, addPlan, updatePlan } = usePlans();
   const { toast } = useToast();
   
   const destinations = [...tamilNaduDestinations, ...keralaDestinations, ...bangaloreDestinations];
