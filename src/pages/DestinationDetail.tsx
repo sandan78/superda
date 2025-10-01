@@ -341,7 +341,7 @@ const DestinationDetail = () => {
                           Best For
                         </h3>
                         <div className="flex flex-wrap gap-2">
-                          {destination.tags.map((tag, index) => (
+                          {[destination.emotionalMatch].map((tag, index) => (
                             <Badge key={index} variant="secondary" className="bg-blue-100 text-blue-800">
                               {tag}
                             </Badge>
@@ -373,7 +373,7 @@ const DestinationDetail = () => {
                   </CardHeader>
                   <CardContent>
                     <div className="grid md:grid-cols-2 gap-4">
-                      {destination.touristPlaces.map((place, index) => (
+                      {(destination.touristPlaces || []).map((place, index) => (
                         <div key={index} className="p-4 bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl border border-purple-100">
                           <h4 className="font-semibold text-purple-800 mb-2">{place.name}</h4>
                           <p className="text-sm text-purple-600">Must-visit destination</p>
@@ -394,7 +394,7 @@ const DestinationDetail = () => {
                   </CardHeader>
                   <CardContent>
                     <div className="grid md:grid-cols-2 gap-4">
-                      {destination.localCuisine.map((dish, index) => (
+                      {(destination.localCuisine || []).map((dish, index) => (
                         <div key={index} className="p-4 bg-gradient-to-r from-orange-50 to-red-50 rounded-xl border border-orange-100">
                           <h4 className="font-semibold text-orange-800 mb-2">{dish}</h4>
                           <p className="text-sm text-orange-600">Local specialty</p>
@@ -415,7 +415,7 @@ const DestinationDetail = () => {
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-4">
-                      {destination.travelTips.map((tip, index) => (
+                      {(destination.travelTips || []).map((tip, index) => (
                         <div key={index} className="p-4 bg-gradient-to-r from-yellow-50 to-amber-50 rounded-xl border border-yellow-100">
                           <p className="text-yellow-800">{tip}</p>
                         </div>
