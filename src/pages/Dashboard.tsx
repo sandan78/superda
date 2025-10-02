@@ -9,6 +9,7 @@ import { Separator } from "@/components/ui/separator";
 import { usePlans } from "@/contexts/PlanContext";
 import { MapPin, Calendar, Star, Settings, User, Heart, TrendingUp, Clock, CircleCheck as CheckCircle, X, CreditCard as Edit3, ArrowRight, Target, Calendar as CalendarIcon } from "lucide-react";
 import { useSearchParams, useNavigate } from 'react-router-dom';
+import { toast } from "@/hooks/use-toast";
 
 const Dashboard = () => {
   const { selectedPlans, updatePlanStatus, removePlan, getPlansByStatus, advancePlanStep } = usePlans();
